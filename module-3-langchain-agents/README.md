@@ -1,39 +1,53 @@
-# Module 3 — LangChain Agents (Tools + Agent Executor)
+# Module 3 — From Chatbot to Agent: Tools & the ReAct Pattern
 
 ## What you will build
 
-In this module you build your first **tool-using agent** behind an API.
+In Modules 1–2, you built a chatbot that can only **talk**. In Module 3, you'll build an **agent** that can **think AND act** — by choosing and using tools.
 
 - A FastAPI endpoint: `POST /agent/chat`
-- A LangChain **ReAct agent** powered by Ollama (`ChatOllama`)
-- A small toolset that the agent can choose from
+- A **LangGraph ReAct agent** powered by Groq (default) or Ollama (optional)
+- A toolset: `calculator`, `now_unix`, `echo`
+- A survey of the agent framework landscape
 - Tracing/observability via Langfuse
+
+> [!NOTE]
+> This module uses **LangGraph** (the modern industry standard), NOT the deprecated `AgentExecutor`. We use LangChain only for model interfaces (`ChatGroq`, `ChatOllama`) and tool definitions (`@tool`).
 
 ---
 
-## What’s in this folder
+## What's in this folder
 
 - `app/main.py`
-  - `POST /agent/chat`
+  - `POST /agent/chat` — an AI agent that can choose and use tools
   - Tools: `calculator`, `now_unix`, `echo`
+  - Uses LangGraph's `create_react_agent`
 - `.env.example`
+  - Configuration for Groq (default), optional Ollama, Langfuse, and app metadata
 - `requirements.txt`
+  - Python dependencies (includes `langgraph`)
 - `scripts/test_agent.sh`
+  - Quick test script
 
 ## Practicals
 
-1. [Create typed agent tools](module-3-1-typed-tools.md)
-2. [Understand the ReAct loop](module-3-2-react-loop.md)
-3. [Build and run the agent executor](module-3-3-agent-executor.md)
-4. [Test tool selection and failures](module-3-4-agent-tests.md)
+0. [Start here: how Module 3 extends Module 2](module-3-0-bridge.md)
+1. [What makes an agent different from a chatbot?](module-3-1-chatbot-vs-agent.md)
+2. [What are tools? (The Librarian's Phone)](module-3-2-what-are-tools.md)
+3. [The ReAct pattern: Think → Act → Observe](module-3-3-react-pattern.md)
+4. [Build your first tool-using agent (LangGraph)](module-3-4-first-agent.md)
+5. [Agent framework landscape (2025/2026)](module-3-5-framework-landscape.md)
+6. [When NOT to use an agent](module-3-6-when-not-to-use-agent.md)
+7. [Test your agent](module-3-7-agent-tests.md)
 
 ---
 
 ## Prerequisites
 
+- Module 2 understanding-level activities
 - Python 3.10+
-- Ollama installed and running
+- A Groq account and API key (recommended) OR Ollama installed locally
 - (Optional but recommended) Langfuse keys
+- No previous agent or LangGraph experience required
 
 ---
 
@@ -48,23 +62,32 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
+Fill in your `GROQ_API_KEY` in `.env`.
+
 ---
 
 ## Run
 
-### 1) Start Ollama and pull the model
+### Option A — Groq Cloud (recommended, no GPU needed)
+
+Set in `.env`:
+
+```text
+LLM_PROVIDER=groq
+GROQ_API_KEY=gsk_your_individual_key
+GROQ_MODEL=llama-3.1-8b-instant
+```
+
+### Option B — Ollama (optional local mode)
 
 ```bash
 ollama serve
-```
-
-In another terminal:
-
-```bash
 ollama pull llama4:scout
 ```
 
-### 2) Start the API server
+Set `LLM_PROVIDER=ollama` in `.env`.
+
+### Start the API server
 
 ```bash
 uvicorn app.main:app --reload
@@ -78,13 +101,9 @@ uvicorn app.main:app --reload
 bash scripts/test_agent.sh
 ```
 
----
+Or test manually:
 
-## Lab 1 — Verify tool usage
-
-Try queries that should trigger tools:
-
-- Math:
+### Math (should use calculator):
 
 ```bash
 curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
@@ -92,7 +111,7 @@ curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
   -d '{"user_query":"Compute (125 * 8) - 17."}'
 ```
 
-- Time:
+### Time (should use now_unix):
 
 ```bash
 curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
@@ -100,25 +119,41 @@ curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
   -d '{"user_query":"What is the current Unix timestamp?"}'
 ```
 
+### General (should answer without tools):
+
+```bash
+curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
+  -H "Content-Type: application/json" \
+  -d '{"user_query":"What is Python used for?"}'
+```
+
 ---
 
-## Lab 2 — Change the toolset (student exercise)
+## Student Exercise: Add a New Tool
 
-Add a new tool and re-run:
+Add one of these tools and verify the agent uses it:
 
-- `word_count(text: str) -> str`
-- `to_upper(text: str) -> str`
-
-Acceptance:
-
-- The agent uses the tool when asked
-- The API still returns quickly and reliably
+- `word_count(text: str) -> str` — Count words in text
+- `to_upper(text: str) -> str` — Convert text to uppercase
+- `reverse_text(text: str) -> str` — Reverse a string
 
 ---
 
 ## Checkpoint (Module 3)
 
-- [ ] I can run `POST /agent/chat` locally.
-- [ ] The agent can solve a math query using the `calculator` tool.
-- [ ] The agent can answer a time query using the `now_unix` tool.
-- [ ] I can find the run in Langfuse using `request_id`.
+- [ ] I can explain the difference between a chatbot and an agent.
+- [ ] I understand tools, the ReAct pattern, and why LangGraph replaces AgentExecutor.
+- [ ] I can run `POST /agent/chat` and the agent uses the correct tool.
+- [ ] I can name at least 4 agent frameworks and their main use case.
+- [ ] I know when NOT to use an agent (cost, speed, simplicity).
+- [ ] I can find the agent's reasoning trace in Langfuse.
+
+---
+
+## What's next
+
+In **Module 4**, you'll go deeper into LangGraph:
+- Define custom graph states
+- Add conditional routing (math vs general vs summarization)
+- Build plan-execute workflows
+- Create deterministic, production-ready agent graphs
