@@ -1,32 +1,92 @@
-# Module 6 — Custom Tools and Model Context Protocol
+# Module 6 — Custom Tools & External APIs
 
-## Goal
+## What you will build
 
-Build reusable tools that agents can discover and call safely.
+So far, your agents have been trapped inside a box, only able to read and write text. In this module, you give your agent the ability to **interact with the real world**.
 
-## Topics
+We are building the **Indian Stock Market Alert Agent**. 
 
-- Typed tool contracts with Pydantic
-- Local functions, REST APIs, databases, search, and document tools
-- MCP servers, clients, resources, prompts, and tool discovery
-- Authentication and secret handling
-- Timeouts, retries, rate limits, and idempotency
-- Tool allowlists and user-scoped authorization
-- Safe errors that do not leak credentials or internals
+You will build two powerful custom tools:
+1. `get_stock_price`: Uses `yfinance` to fetch live prices from the NSE and BSE. (This is a **Read Tool**).
+2. `send_email_alert`: Uses `smtplib` to physically send an email to a user's inbox. (This is a **Write Tool**).
+
+---
+
+## What's in this folder
+
+- `app/main.py`
+  - `POST /agent/chat`
+  - A ReAct agent equipped with the two custom tools.
+  - Implements **Tool Safety** by using `MOCK_EMAILS` to prevent spamming during testing.
+- `.env.example`
+  - Configuration for Groq, SMTP (Email/Password), and MOCK settings.
+- `requirements.txt`
+  - Note the addition of `yfinance`!
 
 ## Practicals
 
-1. [Build a typed custom tool](module-6-1-typed-tool.md)
-2. [Create an MCP server](module-6-2-mcp-server.md)
-3. [Connect an agent to MCP](module-6-3-mcp-client.md)
-4. [Secure, test, and approval-gate tools](module-6-4-safe-tools.md)
+0. [External APIs & The Real World](module-6-0-external-apis.md)
+1. [Building the Stock Price Tool](module-6-1-stock-tool.md)
+2. [Building the Email Tool](module-6-2-email-tool.md)
+3. [Tool Safety (Crucial!)](module-6-3-tool-safety.md)
+4. [Create a Lovable Alert UI](module-6-4-lovable-alert-ui.md)
 
-## Deliverable
+---
 
-An MCP server with at least two read-only tools, one approval-gated write tool, schemas, tests, and a client example.
+## Prerequisites
 
-## Completion criteria
+- Python 3.10+
+- A Groq account and API key
+- (Optional) A Gmail account if you want to test sending *real* emails (Requires generating an App Password).
 
-- Secrets never appear in responses or traces.
-- Tool arguments are validated before execution.
-- Repeated idempotency keys cannot repeat a write.
+---
+
+## Setup
+
+From this folder (`module-6-custom-tools-mcp/`):
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+```
+
+Fill in your `GROQ_API_KEY` in `.env`.
+
+> **IMPORTANT:** Ensure `MOCK_EMAILS=true` is set in your `.env` file when you start testing!
+
+---
+
+## Run
+
+### Start the API server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+---
+
+## Test Locally
+
+Send a prompt asking the agent to check an Indian stock and send an email:
+
+```bash
+curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_query": "Check the price of RELIANCE.NS. If it is over ₹2000, send an email to boss@example.com saying we should sell."
+  }'
+```
+
+Watch the terminal running `uvicorn` carefully! You will see the agent call the `get_stock_price` tool, and then you will see the `[MOCK EMAIL]` output printed to the terminal instead of an actual email being sent.
+
+---
+
+## Checkpoint (Module 6)
+
+- [ ] I can explain what a custom tool is in LangChain.
+- [ ] I understand why the **docstring** of a Python function is critical for the AI to use the tool correctly.
+- [ ] I understand the danger of **Write Tools** (like sending emails) compared to **Read Tools**.
+- [ ] I successfully tested my agent and saw the Mock Email printed in my terminal.

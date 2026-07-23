@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic
+langchain-core
+langchain-groq
+langchain-ollama
+langgraph
+langfuse
+yfinance
