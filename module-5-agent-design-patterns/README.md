@@ -1,32 +1,100 @@
-# Module 5 — Agent Design Patterns and Autonomy
+# Module 5 — Agent Design Patterns (Reflection)
 
-## Goal
+## What you will build
 
-Learn to choose the least autonomous design that can reliably solve a task.
+In this module, you will learn about **Agent Design Patterns**. Specifically, you will master the **Reflection / Critique Pattern** by building the **Job Analyzer Agent** (Task 1).
 
-## Topics
+You will expose a single API endpoint:
+- `POST /analyzer/score`
 
-- LLM vs RAG vs agent
-- Basic responder, router, tool-caller, multi-agent, and autonomous-loop levels
-- Reflection and self-correction
-- ReAct
-- Planning and plan-and-execute
-- Deterministic graphs versus autonomous agents
-- Stop conditions, step budgets, and fallback paths
+This API uses three separate LLM calls to generate perfect feedback:
+1. `analyzer_node`: Writes a draft review of the user's CV.
+2. `critique_node`: Acts as a Harsh Senior Manager to find flaws in the draft.
+3. `refine_node`: Fixes the flaws and returns the final polished review.
+
+---
+
+## What's in this folder
+
+- `app/main.py`
+  - `POST /analyzer/score`
+  - The `JobAnalyzerState` definition
+  - The 3-node Reflection graph
+- `.env.example`
+  - Configuration for Groq (default), optional Ollama, and Langfuse
+- `requirements.txt`
 
 ## Practicals
 
-1. [Agent autonomy levels](module-5-1-autonomy-levels.md)
-2. [Router and tool-use patterns](module-5-2-router-tool-patterns.md)
-3. [Reflection with bounded revision](module-5-3-reflection.md)
-4. [Planning and pattern comparison](module-5-4-planning-comparison.md)
+0. [What are Agent Design Patterns?](module-5-0-what-are-patterns.md)
+1. [The Reflection Pattern](module-5-1-the-reflection-pattern.md)
+2. [Coding the Job Analyzer](module-5-2-job-analyzer-code.md)
+3. [Compile and Test the Job Analyzer](module-5-3-compile-and-test.md)
+4. [Create a Lovable Analyzer UI](module-5-4-lovable-analyzer-ui.md)
 
-## Deliverable
+---
 
-An architecture decision record explaining which pattern should be used for three example business problems and why.
+## Prerequisites
 
-## Completion criteria
+- Module 4 understanding (LangGraph basics)
+- Python 3.10+
+- A Groq account and API key (recommended) OR Ollama installed locally
+- (Optional but recommended) Langfuse keys
 
-- No workflow can loop indefinitely.
-- Invalid plans fail with a controlled error.
-- The comparison includes at least 20 repeatable test prompts.
+---
+
+## Setup
+
+From this folder (`module-5-agent-design-patterns/`):
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+```
+
+Fill in your `GROQ_API_KEY` in `.env`.
+
+---
+
+## Run
+
+Set in `.env`:
+```text
+LLM_PROVIDER=groq
+GROQ_API_KEY=gsk_your_individual_key
+GROQ_MODEL=llama-3.1-8b-instant
+```
+
+### Start the API server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+---
+
+## Test Locally
+
+Send a terribly formatted CV to the API to see how the Harsh Critic handles it:
+
+```bash
+curl -sS -X POST "http://127.0.0.1:8000/analyzer/score" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "raw_cv": "hi my name alex i do coding i know python n sum html. i worked at google for 2 weeks den quit.",
+    "job_title": "Senior Staff Software Engineer"
+  }'
+```
+
+*Note: This request takes 4-6 seconds because it makes 3 separate LLM calls under the hood!*
+
+---
+
+## Checkpoint (Module 5)
+
+- [ ] I can name the 4 core agent design patterns.
+- [ ] I understand the Reflection pattern (Draft -> Critique -> Refine).
+- [ ] I traced the 3-step execution in my Langfuse dashboard.
+- [ ] I successfully generated a multi-step loading UI in Lovable to handle the 6-second latency.
