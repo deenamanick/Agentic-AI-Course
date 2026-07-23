@@ -6,6 +6,17 @@ You are not expected to be a Python developer, AI engineer, or backend expert.
 
 This course teaches one small idea at a time. Copying working code is allowed. Asking what a word means is encouraged. Errors are part of the practical, not evidence that you cannot learn.
 
+## What is Agentic AI? (Real-World Use Cases)
+
+Unlike a traditional ChatGPT interface (where you ask a question and it just returns text), **Agentic AI** refers to systems that can plan, use tools, interact with external systems, and autonomously execute multi-step workflows to achieve a goal. 
+
+As you progress through this course, you will build the foundations to create agents like:
+- **Software Engineering Assistants:** Agents that can read a codebase, identify bugs, write code, run tests, and open pull requests autonomously.
+- **Autonomous Customer Support:** Agents that don't just answer questions, but take action (e.g., verifying identity, hitting a billing API, and processing a refund).
+- **Data Analysis Automation:** Agents that scrape the web for competitor pricing, run a Python script to format it, and email a summarized report to the team.
+- **IT Operations (Auto-Remediation):** Agents that receive server failure alerts, SSH into the server, kill the rogue process, and write a post-mortem report.
+- **Personal Assistants:** Agents that manage your daily life by reading emails, drafting replies, and scheduling calendar events automatically.
+
 ## The same system from different viewpoints
 
 We are building an AI tutor. Groq is the default classroom provider, so students do not need a local GPU. Ollama remains an optional local path.

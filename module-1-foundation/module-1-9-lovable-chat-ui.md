@@ -2,7 +2,10 @@
 
 ## Why, in simple terms
 
-The backend works, but normal users need a visual interface. Lovable can generate the React interface. Visual Studio Code is where you connect it to the real FastAPI endpoint.
+The backend works (we already configured FastAPI to call Groq or Ollama in Practical 1.6), but normal users need a visual interface. Lovable can generate the React interface. Visual Studio Code is where you connect it to the real FastAPI endpoint.
+
+> [!NOTE]
+> This practical focuses entirely on the Frontend (React). The backend code that calls Groq or Ollama was already completed in previous steps and doesn't need to be rewritten here.
 
 ## Part 1: Copy this prompt into Lovable
 
@@ -130,7 +133,7 @@ npm run dev
 ```text
 Lovable React UI
    -> fetch()
-   -> FastAPI POST /chat
+   -> FastAPI POST /chat (Your backend from Practical 1.6)
    -> ChatGroq or ChatOllama
    -> Llama model
    -> ChatResponse JSON

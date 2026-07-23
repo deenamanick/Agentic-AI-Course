@@ -53,13 +53,14 @@ For every practical:
 0. [Start here: confidence, roles, and the complete picture](module-1-0-welcome.md)
 1. [Python basics for AI agents](module-1-1-python-basics.md)
 2. [Python functions, packages, and environment variables](module-1-2-python-project-basics.md)
-3. [How web APIs, HTTP, and JSON work](module-1-3-web-api-basics.md)
-4. [Build your first FastAPI application](module-1-4-fastapi-basics.md)
-5. [Understand the existing AI backend code](module-1-5-code-walkthrough.md)
-6. [Connect FastAPI to Groq or Ollama](module-1-6-groq-ollama.md)
-7. [Understand the Bash and curl test script](module-1-7-test-script.md)
-8. [Trace AI requests with Langfuse](module-1-8-langfuse.md)
-9. [Create a Lovable chat UI and connect it](module-1-9-lovable-chat-ui.md)
+3. [How the Internet Works (Frontend vs Backend)](module-1-2b-internet-basics.md)
+4. [How web APIs, HTTP, and JSON work](module-1-3-web-api-basics.md)
+5. [Build your first FastAPI application](module-1-4-fastapi-basics.md)
+6. [Understand the existing AI backend code](module-1-5-code-walkthrough.md)
+7. [Connect FastAPI to Groq or Ollama](module-1-6-groq-ollama.md)
+8. [Understand the Bash and curl test script](module-1-7-test-script.md)
+9. [Trace AI requests with Langfuse](module-1-8-langfuse.md)
+10. [Create a Lovable chat UI and connect it](module-1-9-lovable-chat-ui.md)
 
 ---
 
