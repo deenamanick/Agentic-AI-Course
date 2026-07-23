@@ -54,6 +54,32 @@ Do not rewrite everything yet.
 2. The answer asks you to expose a secret in frontend code.
 3. It claims an action succeeded without evidence.
 
+## Evidence ladder
+
+Use stronger checks for higher-risk claims:
+
+1. Read the answer carefully.
+2. Run the code or command.
+3. Check the API response or test result.
+4. Consult official documentation.
+5. Ask a qualified human for high-impact decisions.
+
+An AI answer is not evidence that an external action happened.
+
+## Practice levels
+
+### Understand
+
+Find two unclear claims in a prepared AI answer.
+
+### Practice
+
+Write one refinement prompt using specific feedback.
+
+### Challenge
+
+Verify a technical claim against official documentation and record the link and date.
+
 ## Lovable prompt
 
 ```text
@@ -75,3 +101,9 @@ Requirements:
 - [ ] I can give specific refinement feedback.
 - [ ] I know at least three AI red flags.
 - [ ] I verify important claims with evidence or tests.
+
+## Common problem
+
+**The AI repeatedly rewrites everything.**
+
+Request the smallest change and state which parts must remain unchanged.

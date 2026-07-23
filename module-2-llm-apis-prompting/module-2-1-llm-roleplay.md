@@ -46,8 +46,33 @@ Label each answer:
 - needs a tool or retrieval
 - needs a clarifying question
 
+## What an LLM is not
+
+An LLM is not automatically:
+
+- A database containing private company records
+- A search engine with guaranteed current information
+- A calculator that should be trusted without checking
+- An autonomous agent with permission to act
+- A human who understands unstated intentions
+
+## Different learner viewpoints
+
+- **Project manager:** What requirement is missing?
+- **UX designer:** What clarification would reduce user frustration?
+- **DevOps engineer:** Which external service would provide current data?
+- **Homemaker:** Which ingredient or instruction is missing from the recipe?
+- **Developer:** Does this need context, retrieval, or a tool call?
+
+## Common misunderstanding
+
+**“The answer sounds professional, so it must be correct.”**
+
+Fluent language is a model capability. Accuracy must still be checked using sources, tools, tests, or human review.
+
 ## Success checklist
 
 - [ ] I can explain LLM, RAG, and agent in my own words.
 - [ ] I know an LLM can sound confident and still be wrong.
 - [ ] I can identify when context, a tool, or clarification is needed.
+- [ ] I can name one thing an LLM cannot safely do by itself.

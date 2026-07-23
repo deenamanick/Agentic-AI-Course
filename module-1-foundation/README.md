@@ -86,6 +86,7 @@ For every practical:
 - Basic computer and terminal usage
 - Visual Studio Code
 - Python 3.10+ (3.11 recommended)
+- Node.js (for running the React frontend)
 - A Groq account and individual API key for the recommended path
 - Ollama only for the optional local path
 - No previous FastAPI or AI-agent experience required

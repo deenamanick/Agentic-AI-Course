@@ -49,7 +49,14 @@ Code requirements:
 
 ## Part 2: Export and open in Visual Studio Code
 
-Open the exported project and install dependencies:
+1. Download the generated project from Lovable.
+2. Extract the files and open the folder in Visual Studio Code.
+3. Open a new terminal in VS Code.
+
+> [!NOTE]
+> The next command requires **Node.js** to be installed on your computer. If you don't have it, download it from [nodejs.org](https://nodejs.org/). `npm` stands for Node Package Manager.
+
+Install the frontend dependencies:
 
 ```bash
 npm install
@@ -61,9 +68,11 @@ Create `.env`:
 VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
 
-## Part 3: API connection
+## Part 3: Connecting the Frontend to our Python Backend
 
-The service should look similar to:
+In **Practical 1.2b**, we talked about how the Frontend uses `fetch()` to talk to the Backend API. Lovable should have generated a file (like `src/services/chatApi.js`) that handles this.
+
+Check the code Lovable generated. It should look very similar to this:
 
 ```javascript
 const API_BASE_URL =

@@ -5,9 +5,12 @@ from typing import Any
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_groq import ChatGroq
 from langchain_ollama import ChatOllama
 
 from langfuse import get_client
@@ -37,7 +40,7 @@ def get_system_prompt(prompt_version: str) -> str:
 
 
 class ChatRequest(BaseModel):
-    user_query: str
+    user_query: str = Field(min_length=1, max_length=4000)
 
 
 class ChatResponse(BaseModel):
@@ -53,21 +56,50 @@ class StructuredChatResponse(BaseModel):
     prompt_version: str
 
 
-def build_llm() -> ChatOllama:
-    base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    model = os.getenv("OLLAMA_MODEL", "llama4:scout")
+def build_llm() -> BaseChatModel:
+    provider = os.getenv("LLM_PROVIDER", "groq").lower()
 
-    return ChatOllama(
-        model=model,
-        base_url=base_url,
-        temperature=float(os.getenv("OLLAMA_TEMPERATURE", "0.7")),
-        model_kwargs={
-            "num_ctx": int(os.getenv("OLLAMA_NUM_CTX", "32768")),
-        },
+    if provider == "groq":
+        return ChatGroq(
+            model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
+            temperature=0.7,
+            timeout=30,
+            max_retries=2,
+        )
+
+    if provider == "ollama":
+        return ChatOllama(
+            model=os.getenv("OLLAMA_MODEL", "llama4:scout"),
+            base_url=os.getenv(
+                "OLLAMA_BASE_URL",
+                "http://localhost:11434",
+            ),
+            temperature=float(
+                os.getenv("OLLAMA_TEMPERATURE", "0.7")
+            ),
+            model_kwargs={
+                "num_ctx": int(
+                    os.getenv("OLLAMA_NUM_CTX", "32768")
+                ),
+            },
+        )
+
+    raise ValueError(
+        "Unsupported LLM_PROVIDER. Choose 'groq' or 'ollama'."
     )
 
 
 app = FastAPI(title="Jeevisoft Prompting Lab API", version="0.2.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        os.getenv("FRONTEND_ORIGIN", "http://localhost:5173"),
+    ],
+    allow_credentials=False,
+    allow_methods=["POST"],
+    allow_headers=["Content-Type"],
+)
 
 
 @app.post("/chat", response_model=ChatResponse)
@@ -167,11 +199,11 @@ async def chat_structured(req: ChatRequest) -> StructuredChatResponse:
             isinstance(s, str) for s in steps
         ):
             raise ValueError("Invalid JSON shape")
-    except Exception as e:
+    except (json.JSONDecodeError, KeyError, TypeError, ValueError):
         raise HTTPException(
             status_code=502,
-            detail=f"Model did not return valid structured JSON: {e}",
-        )
+            detail="Model did not return the required structured response.",
+        ) from None
 
     return StructuredChatResponse(
         summary=summary,

@@ -37,6 +37,34 @@ Combine their small outputs into one plan.
 
 Ask the AI to create only the plan. Review it. Then send one step at a time and check the result before continuing.
 
+## Done-when rule
+
+Every chunk needs a visible completion check.
+
+| Chunk | Done when |
+|---|---|
+| Define user | One primary user and problem are written |
+| Design API | Request and response JSON are agreed |
+| Build endpoint | The endpoint returns a tested response |
+| Connect UI | Loading, success, and failure are visible |
+| Test | Acceptance checks pass |
+
+Without “done when,” a small task can still be vague.
+
+## Practice levels
+
+### Understand
+
+Arrange prepared project-step cards in a sensible order.
+
+### Practice
+
+Break “build an AI tutor” into no more than six chunks.
+
+### Challenge
+
+Identify which chunks can happen in parallel and which depend on earlier work.
+
 ## Lovable prompt
 
 ```text
@@ -59,3 +87,9 @@ Requirements:
 - [ ] Each step has a visible outcome.
 - [ ] I check one step before starting the next.
 - [ ] I can explain how different roles contribute.
+
+## Common problem
+
+**The AI writes code for every step at once.**
+
+Ask only for a plan first. Then explicitly say: “Implement Step 1 only and stop for review.”

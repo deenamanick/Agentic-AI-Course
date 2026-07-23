@@ -47,6 +47,38 @@ Explain the same concept for:
 
 Notice that the core truth stays the same while analogy and detail change.
 
+## Guided classroom activity
+
+Start with:
+
+```text
+Create a project plan.
+```
+
+Ask the class five questions:
+
+1. Who should the AI act as?
+2. What exact project is being planned?
+3. Who will use the plan?
+4. What limits or requirements apply?
+5. What output format is easiest to review?
+
+Write the answers into the five-part template. Run both prompts and compare how much the AI had to guess.
+
+## Practice levels
+
+### Understand
+
+Circle Role, Task, Context, Rules, and Output in a prepared prompt.
+
+### Practice
+
+Rewrite one vague request using all five parts.
+
+### Challenge
+
+Create two versions for different learner backgrounds without changing the technical truth.
+
 ## Lovable prompt
 
 ```text
@@ -69,3 +101,9 @@ Layout:
 - [ ] I can improve a vague request.
 - [ ] I can adapt an explanation without stereotyping the learner.
 - [ ] I understand that a good prompt reduces guessing.
+
+## Common problem
+
+**The prompt becomes very long but the result is not better.**
+
+Remove background information that does not affect the task. More text is not automatically more context.

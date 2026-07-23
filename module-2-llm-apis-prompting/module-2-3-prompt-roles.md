@@ -28,11 +28,45 @@ HumanMessage(content=req.user_query)
 
 Test the same user request under two safe system roles. Then try a user message that asks to ignore the system role.
 
+The application selects the system prompt here:
+
+```python
+SystemMessage(
+    content=get_system_prompt(prompt_version)
+)
+```
+
+The learner’s input stays separate:
+
+```python
+HumanMessage(content=req.user_query)
+```
+
 ## Understand
 
 - System prompt = application behavior and boundaries
 - User prompt = the current request
 - Neither prompt alone guarantees security; permissions must also be enforced in code
+
+## Practice levels
+
+### Understand
+
+Sort prepared instruction cards into “system behavior” and “current user task.”
+
+### Practice
+
+Change the teaching style in `SYSTEM_PROMPT_V2` and compare one response.
+
+### Challenge
+
+Create a safe role for a beginner tutor that asks for clarification rather than inventing missing details.
+
+## Common problem
+
+**The user asks the model to ignore all previous instructions.**
+
+Do not rely on the prompt as the only security control. Tool permissions, authentication, validation, and approval belong in application code.
 
 ## Success checklist
 
