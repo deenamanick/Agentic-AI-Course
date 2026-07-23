@@ -1,33 +1,97 @@
-# Module 7 — Memory and Stateful Agents
+# Module 7 — Memory & Stateful Agents
 
-## Goal
+## What you will build
 
-Give an agent useful continuity without creating unsafe or inaccurate permanent memory.
+So far, all your agents have had "goldfish memory." They forget who you are the moment the request finishes.
 
-## Topics
+In this module, you will build **Task 14: Mental Health Companion**. This agent will use **LangGraph Checkpointers** to remember the user's state across multiple conversations. 
 
-- Working and conversation memory
-- Long-term semantic memory
-- Episodic execution memory
-- Entity and user-preference memory
-- Summarization and context-window management
-- Memory extraction, confidence, correction, expiration, and deletion
-- Tenant isolation and consent
-- Vector storage versus relational storage
+If a user connects on Monday and says they are stressed, and connects again on Wednesday, the agent will remember their stress and follow up with them!
+
+---
+
+## What's in this folder
+
+- `app/main.py`
+  - `POST /agent/chat`
+  - A ReAct agent powered by `MemorySaver`.
+  - Requires a `thread_id` to be passed in the request body.
+- `.env.example`
+  - Configuration for Groq and Langfuse.
+- `requirements.txt`
 
 ## Practicals
 
-1. [Working and conversation memory](module-7-1-working-memory.md)
-2. [Long-term and semantic memory](module-7-2-long-term-memory.md)
-3. [Safe memory lifecycle](module-7-3-safe-memory.md)
-4. [Build a stateful tutor](module-7-4-stateful-tutor.md)
+0. [Why do Agents need Memory?](module-7-0-why-memory.md)
+1. [Thread IDs](module-7-1-thread-ids.md)
+2. [LangGraph Checkpointers](module-7-2-checkpointers.md)
+3. [Testing the Mental Health Companion](module-7-3-test-companion.md)
+4. [Create a Lovable Companion UI](module-7-4-lovable-companion-ui.md)
 
-## Deliverable
+---
 
-A stateful tutor that remembers learning goals and previous mistakes across sessions while supporting inspect, correct, and forget operations.
+## Prerequisites
 
-## Completion criteria
+- Python 3.10+
+- A Groq account and API key
 
-- Cross-user memory access tests fail closed.
-- Unapproved model guesses are not stored as facts.
-- Memory retrieval quality and token savings are measured.
+---
+
+## Setup
+
+From this folder (`module-7-memory-stateful-agents/`):
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+```
+
+Fill in your `GROQ_API_KEY` in `.env`.
+
+---
+
+## Run
+
+### Start the API server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+---
+
+## Test Locally
+
+You must send two requests to test the memory. **Make sure you use the exact same `thread_id` for both!**
+
+**Request 1 (Tell it a secret):**
+```bash
+curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_query": "Hi, I have a big exam tomorrow and I am feeling incredibly anxious.",
+    "thread_id": "test-user-1"
+  }'
+```
+
+**Request 2 (Check its memory):**
+```bash
+curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_query": "Hi, I am back.",
+    "thread_id": "test-user-1"
+  }'
+```
+*The AI should immediately ask you about your exam!*
+
+---
+
+## Checkpoint (Module 7)
+
+- [ ] I understand why an LLM API doesn't remember my previous requests by default.
+- [ ] I know what a `thread_id` is used for.
+- [ ] I can explain what a LangGraph Checkpointer (like `MemorySaver`) does.
+- [ ] I successfully tested the memory using two `curl` requests with the same `thread_id`.
