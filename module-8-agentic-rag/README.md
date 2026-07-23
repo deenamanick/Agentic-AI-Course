@@ -15,6 +15,16 @@ Build an agent that retrieves evidence, evaluates it, and answers with verifiabl
 - Retrieval evaluation
 - Prompt injection in untrusted documents
 
+## Theory: Agentic RAG vs Standard RAG
+
+While a Standard RAG pipeline retrieves chunks from a Vector DB, an **Agentic RAG** can dynamically route between entirely different data sources (both structured and unstructured). 
+
+For example, using a **Supervisor Agent** (Router):
+- **Document Query Agent:** Searches unstructured PDFs/Text using tools like Cortex Search.
+- **SQL Query Agent:** Searches structured SQL databases using tools like Cortex Analyst to fetch numeric insights (e.g., "Top 3 sales agents for Product X").
+
+The Supervisor routes the query, the sub-agents retrieve the context, and the Supervisor synthesizes the final contextualized response.
+
 ## Practicals
 
 1. [Ingest and chunk documents](module-8-1-ingestion-chunking.md)

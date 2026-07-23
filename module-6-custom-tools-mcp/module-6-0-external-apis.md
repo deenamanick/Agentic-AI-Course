@@ -37,6 +37,21 @@ The Agent will:
 
 ---
 
+## 🏛️ Enterprise Challenge: MCP Tool Governance
+
+As the number of tools grows, we hit the **Model Context Protocol (MCP)** scaling wall. The ungoverned rise of agentic tools leads to discovery confusion and lower productivity.
+
+**1. The Discovery Challenge:** 
+Tool discovery typically relies on natural language descriptions. If a user asks for a web search, but the system has five ambiguously named tools (`search_web`, `web_search`, `ai-web-search`, `batch-web-search`, `answer_query_websearch`), which one should the agent pick? This is a major challenge for AI Orchestrators.
+
+**2. Hierarchical Namespaces:** 
+To solve this, Enterprise MCP platforms enforce **hierarchical namespaces** of thematically related tools (e.g., `github/search_repos`, `github/create_issue`).
+
+**3. Context Management (Tokens):** 
+In Agent-to-Agent (A2A) interactions, the output of Tool A becomes the context for Tool B. Because current MCP specs lack a provision to specify the token count produced by a tool, agents must implement their own **context management strategy** to avoid blowing up the LLM's context window.
+
+---
+
 ## 💡 Key Takeaways
 
 - To make an AI useful, it needs to interact with the real world.

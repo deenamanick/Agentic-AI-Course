@@ -16,6 +16,21 @@ Prevent agents from turning untrusted text or model mistakes into unauthorized a
 - Sandboxing, rate limiting, and abuse prevention
 - Incident logging and safe failure
 
+## Theory: Enterprise Guardrails
+
+When building autonomous agents, "Write" tools (like sending emails or making payments) are inherently dangerous. We protect the system using three core concepts:
+
+**1. The Human-in-the-Loop (HITL) Strategy:**
+- **Co-plan:** Validate that the agent's generated execution graph matches user intent.
+- **Co-execute:** Pause execution allowing the user to provide feedback if the agent strays.
+- **Co-comply:** Mark critical/irreversible tasks (e.g., payments) to require explicit approval after verifying guardrails.
+
+**2. Automated Guardrails Pipeline:**
+Policies shouldn't just be prompt instructions. They should be mapped to specific tools, compiled into validation code, and invoked *before* the agent executes a tool. If the guardrail fails, the agent is prompted to reflect and adapt.
+
+**3. Privacy Inference Attacks:**
+LLMs are vulnerable to **Membership Inference** (detecting if a user's data was in the training set) and **Property Inference** (reconstructing properties of the dataset) even via Black Box API attacks. We mitigate this via strict authorization constraints.
+
 ## Practicals
 
 1. [Threat model an agent system](module-12-1-threat-model.md)
