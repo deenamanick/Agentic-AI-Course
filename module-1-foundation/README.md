@@ -14,6 +14,16 @@ You will first learn the small amount of Python needed for this course. Then you
 
 You do not need to master all of Python before starting.
 
+## This module is for everyone
+
+Students may come from project management, DevOps, UX design, operations, teaching, homemaking, or software development. Existing coding experience changes how quickly someone types—it does not decide whether they can understand the system.
+
+Every practical has three levels:
+
+- **Understand:** Explain the idea using an everyday example.
+- **Practice:** Copy, run, and change a small working example.
+- **Challenge:** Extend the example when the learner is ready.
+
 ## Beginner learning rule
 
 For every practical:
@@ -39,6 +49,7 @@ For every practical:
 
 ## Practicals
 
+0. [Start here: confidence, roles, and the complete picture](module-1-0-welcome.md)
 1. [Python basics for AI agents](module-1-1-python-basics.md)
 2. [Python functions, packages, and environment variables](module-1-2-python-project-basics.md)
 3. [How web APIs, HTTP, and JSON work](module-1-3-web-api-basics.md)

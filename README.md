@@ -2,6 +2,19 @@
 
 This repo contains the curriculum + coding exercises.
 
+## Teaching philosophy
+
+This is a beginner-first course for mixed-background learners, including project managers, DevOps engineers, UX designers, developers, teachers, homemakers, students, and career-switchers.
+
+- Start with an everyday analogy and visible result.
+- Teach understanding before syntax.
+- Use roleplay to explain system flows.
+- Copy, run, change, and safely break small examples.
+- Separate required foundation work from optional challenges.
+- Never assume previous Python, FastAPI, or AI experience.
+
+Instructors should use the [Beginner Teaching Guide](BEGINNER-TEACHING-GUIDE.md).
+
 ## Outcomes
 
 - Build a local-first AI backend using Ollama (`llama4:scout`).

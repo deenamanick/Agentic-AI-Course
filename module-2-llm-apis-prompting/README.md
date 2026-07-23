@@ -1,4 +1,10 @@
-# Module 2 — LLM APIs & Prompting (Prompt versions + Structured Output)
+# Module 2 — Talking to AI Clearly: Prompts, Roles, and Structured Answers
+
+## Beginner promise
+
+Module 2 begins with conversation and roleplay—not Python changes. Learners first experience how instructions change an AI response, then gradually connect that behavior to the existing code.
+
+You may complete Practicals 2.1–2.5 using the chat interface or Ollama before opening `app/main.py`.
 
 ## What you will practice
 
@@ -23,16 +29,22 @@ In this module you take the Module 1 `/chat` API idea and turn it into a **promp
 
 ## Practicals
 
-1. [Separate system and user prompts](module-2-1-prompt-roles.md)
-2. [Version prompts](module-2-2-prompt-versioning.md)
-3. [Return structured output](module-2-3-structured-output.md)
-4. [Compare prompts with repeatable tests](module-2-4-prompt-comparison.md)
+1. [Meet the LLM through roleplay](module-2-1-llm-roleplay.md)
+2. [Turn vague requests into structured prompts](module-2-2-structured-prompts.md)
+3. [Separate system and user prompts](module-2-3-prompt-roles.md)
+4. [Break a large task into small prompts](module-2-4-prompt-chunking.md)
+5. [Refine prompts and check AI mistakes](module-2-5-refine-and-verify.md)
+6. [Version prompts](module-2-6-prompt-versioning.md)
+7. [Return structured output](module-2-7-structured-output.md)
+8. [Compare prompts with repeatable tests](module-2-8-prompt-comparison.md)
 
 ---
 
 ## Prerequisites
 
-- Python 3.10+
+- Module 1 understanding-level activities
+- Ability to send a message through the chat UI or Ollama
+- Python practicals are helpful but not required for the first five lessons
 - Ollama installed and running
 - (Optional but recommended) Langfuse account + keys
 
