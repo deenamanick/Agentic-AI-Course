@@ -77,7 +77,7 @@ test_chat.sh
   -> POST http://127.0.0.1:8000/chat
   -> JSON request
   -> FastAPI
-  -> Ollama
+  -> Groq or Ollama
   -> JSON response
   -> terminal
 ```

@@ -14,7 +14,7 @@ import uuid
 - `os` reads environment variables.
 - `uuid` creates a unique request ID.
 
-The other imports provide FastAPI, Pydantic, Ollama messages, the model client, and Langfuse tracing.
+The other imports provide FastAPI, Pydantic, LangChain messages, Groq and Ollama model clients, and Langfuse tracing.
 
 ## Section 2: Load configuration
 
@@ -48,10 +48,11 @@ These classes define the JSON contract.
 
 `build_llm()`:
 
-1. Reads the Ollama URL.
-2. Reads the model name.
-3. Creates `ChatOllama`.
-4. Configures temperature and context size.
+1. Reads `LLM_PROVIDER`.
+2. Creates `ChatGroq` for the default no-GPU classroom path.
+3. Or creates `ChatOllama` for optional local inference.
+4. Reads the selected model configuration.
+5. Configures temperature, timeout, retries, or local context.
 
 `temperature=0.7` allows some creativity. Lower values are usually more predictable.
 
@@ -76,7 +77,7 @@ This means: open `app/main.py`, find `app`, and run it.
 async def chat(req: ChatRequest) -> ChatResponse:
 ```
 
-`async` lets the server wait for Ollama without unnecessarily blocking other work.
+`async` lets the server wait for the model provider without unnecessarily blocking other work.
 
 Inside the function:
 
@@ -94,7 +95,7 @@ Inside the function:
 ChatRequest
    -> chat()
    -> build_llm()
-   -> Ollama
+   -> Groq or Ollama
    -> result.content
    -> ChatResponse
 ```

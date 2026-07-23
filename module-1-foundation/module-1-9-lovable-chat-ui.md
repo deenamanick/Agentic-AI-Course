@@ -15,7 +15,7 @@ The UI will connect to a FastAPI backend endpoint at POST http://127.0.0.1:8000/
 Layout:
 - A centered chat application with a maximum width of 900px.
 - Header title: "Jeevi AI Tutor".
-- Subtitle: "Powered locally by FastAPI and Ollama".
+- Subtitle: "Powered by FastAPI and Llama".
 - Main message area with separate user and assistant message cards.
 - User messages aligned right with an indigo background.
 - Assistant messages aligned left with a light neutral background.
@@ -131,8 +131,8 @@ npm run dev
 Lovable React UI
    -> fetch()
    -> FastAPI POST /chat
-   -> ChatOllama
-   -> Ollama model
+   -> ChatGroq or ChatOllama
+   -> Llama model
    -> ChatResponse JSON
    -> message displayed in React
 ```
@@ -151,4 +151,4 @@ Lovable React UI
 - [ ] The AI answer appears in the chat.
 - [ ] Loading and error states work.
 - [ ] No secrets are stored in frontend code.
-- [ ] I can explain the UI-to-Ollama data flow.
+- [ ] I can explain the UI-to-model-provider data flow.

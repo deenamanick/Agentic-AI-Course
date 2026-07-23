@@ -50,7 +50,9 @@ pip install -r requirements.txt
 
 - `fastapi`: creates the API
 - `uvicorn`: runs the API server
-- `langchain` and `langchain-ollama`: connect the app to Ollama
+- `langchain`: supplies the common model interface
+- `langchain-groq`: connects the app to hosted Groq models
+- `langchain-ollama`: supports optional local Ollama models
 - `langfuse`: records AI traces
 - `python-dotenv`: loads `.env`
 - `httpx`: makes HTTP requests
@@ -66,13 +68,18 @@ cp .env.example .env
 The application reads values such as:
 
 ```text
+LLM_PROVIDER=groq
+GROQ_API_KEY=gsk_...
+GROQ_MODEL=llama-3.1-8b-instant
+
+# Optional local provider
 OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_MODEL=llama4:scout
 ```
 
-This lets us change the model without editing Python.
+This lets us change the provider or model without editing Python.
 
-Never commit real API keys.
+Never commit real API keys and never place `GROQ_API_KEY` in frontend code.
 
 ## Success checklist
 

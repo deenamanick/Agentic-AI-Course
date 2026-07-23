@@ -8,7 +8,7 @@ This course teaches one small idea at a time. Copying working code is allowed. A
 
 ## The same system from different viewpoints
 
-We are building a local AI tutor.
+We are building an AI tutor. Groq is the default classroom provider, so students do not need a local GPU. Ollama remains an optional local path.
 
 | Learner background | Familiar way to understand it |
 |---|---|
@@ -33,7 +33,7 @@ Chat screen sends the question
 FastAPI checks the request
         |
         v
-Ollama asks the local AI model
+Groq or Ollama asks a Llama model
         |
         v
 FastAPI returns the answer
@@ -49,10 +49,10 @@ Choose five people:
 1. **Student** writes a question on paper.
 2. **Frontend** carries the question.
 3. **FastAPI** checks that a question exists.
-4. **Ollama** writes an answer.
+4. **Model provider** writes an answer.
 5. **Frontend** carries the answer back.
 
-Repeat with an empty question. FastAPI should reject it before Ollama receives it.
+Repeat with an empty question. FastAPI should reject it before the model provider receives it.
 
 ## Words to become comfortable with
 

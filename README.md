@@ -17,7 +17,8 @@ Instructors should use the [Beginner Teaching Guide](BEGINNER-TEACHING-GUIDE.md)
 
 ## Outcomes
 
-- Build a local-first AI backend using Ollama (`llama4:scout`).
+- Build an AI backend using hosted Llama models through Groq without requiring a student GPU.
+- Optionally switch the same backend to local Ollama inference.
 - Build structured, tool-using agents with LangChain and LangGraph.
 - Expose reusable tools through Model Context Protocol (MCP).
 - Add memory, Agentic RAG, citations, and multi-agent coordination.
@@ -27,7 +28,7 @@ Instructors should use the [Beginner Teaching Guide](BEGINNER-TEACHING-GUIDE.md)
 
 ## Teaching roadmap
 
-- Start with FastAPI `POST /chat` (Ollama).
+- Start with FastAPI `POST /chat` using Groq, with Ollama as an optional local provider.
 - Add prompts + structured outputs.
 - Add tools (LangChain) and graphs (LangGraph).
 - Progress from deterministic workflows to bounded multi-agent systems.
@@ -37,7 +38,7 @@ Instructors should use the [Beginner Teaching Guide](BEGINNER-TEACHING-GUIDE.md)
 
 | Module | Topic | Primary outcome |
 |---|---|---|
-| 1 | [AI and Agentic AI foundations](module-1-foundation/) | Build a local FastAPI and Ollama chat backend |
+| 1 | [AI and Agentic AI foundations](module-1-foundation/) | Build a Groq-first FastAPI chat backend with optional Ollama |
 | 2 | [LLM APIs and prompting](module-2-llm-apis-prompting/) | Version prompts and return validated structured output |
 | 3 | [LangChain agents](module-3-langchain-agents/) | Build a ReAct agent with typed tools |
 | 4 | [LangGraph workflows](module-4-langgraph/) | Build a deterministic, stateful agent graph |

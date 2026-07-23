@@ -6,7 +6,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_groq import ChatGroq
 from langchain_ollama import ChatOllama
 
 from langfuse import get_client
@@ -32,21 +34,36 @@ class ChatResponse(BaseModel):
     request_id: str
 
 
-def build_llm() -> ChatOllama:
-    base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    model = os.getenv("OLLAMA_MODEL", "llama4:scout")
+def build_llm() -> BaseChatModel:
+    provider = os.getenv("LLM_PROVIDER", "groq").lower()
 
-    return ChatOllama(
-        model=model,
-        base_url=base_url,
-        temperature=0.7,
-        model_kwargs={
-            "num_ctx": 32768,
-        },
+    if provider == "groq":
+        return ChatGroq(
+            model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
+            temperature=0.7,
+            timeout=30,
+            max_retries=2,
+        )
+
+    if provider == "ollama":
+        return ChatOllama(
+            model=os.getenv("OLLAMA_MODEL", "llama4:scout"),
+            base_url=os.getenv(
+                "OLLAMA_BASE_URL",
+                "http://localhost:11434",
+            ),
+            temperature=0.7,
+            model_kwargs={
+                "num_ctx": 32768,
+            },
+        )
+
+    raise ValueError(
+        "Unsupported LLM_PROVIDER. Choose 'groq' or 'ollama'."
     )
 
 
-app = FastAPI(title="Jeevisoft Local AI Backend", version="0.1.0")
+app = FastAPI(title="Jeevisoft AI Backend", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,

@@ -22,7 +22,7 @@ FastAPI backend
    |
    | sends messages
    v
-Ollama model
+Groq or Ollama model
    |
    | returns an answer
    v

@@ -1,4 +1,4 @@
-# Module 1 — Python, FastAPI, and Your First Local AI API
+# Module 1 — Python, FastAPI, and Your First AI API
 
 ## What you will build
 
@@ -7,7 +7,8 @@ This module is designed for a student who is new to Python and backend developme
 You will first learn the small amount of Python needed for this course. Then you will build:
 
 - A FastAPI server with a `POST /chat` endpoint
-- A local AI connection using Ollama and LangChain
+- A hosted Llama connection using Groq and LangChain—no student GPU required
+- An optional local Ollama path for learners who want offline inference
 - A shell script that tests the API using `curl`
 - Optional request tracing with Langfuse
 - A beginner-friendly chat interface designed with Lovable
@@ -38,12 +39,12 @@ For every practical:
 
 - `app/main.py`
   - Defines the FastAPI app and the `/chat` endpoint
-  - Creates a LangChain `ChatOllama` client based on environment variables
+  - Creates either a LangChain `ChatGroq` or `ChatOllama` client
   - Sends traces to Langfuse
 - `requirements.txt`
   - Python dependencies for the module
 - `.env.example`
-  - Environment variable template for Ollama, Langfuse, and app metadata
+  - Environment variable template for Groq, optional Ollama, Langfuse, and app metadata
 - `scripts/test_chat.sh`
   - Quick curl script to call `POST /chat`
 
@@ -55,7 +56,7 @@ For every practical:
 3. [How web APIs, HTTP, and JSON work](module-1-3-web-api-basics.md)
 4. [Build your first FastAPI application](module-1-4-fastapi-basics.md)
 5. [Understand the existing AI backend code](module-1-5-code-walkthrough.md)
-6. [Connect FastAPI to Ollama](module-1-6-ollama.md)
+6. [Connect FastAPI to Groq or Ollama](module-1-6-groq-ollama.md)
 7. [Understand the Bash and curl test script](module-1-7-test-script.md)
 8. [Trace AI requests with Langfuse](module-1-8-langfuse.md)
 9. [Create a Lovable chat UI and connect it](module-1-9-lovable-chat-ui.md)
@@ -66,9 +67,9 @@ For every practical:
 
 1. You send `POST /chat` with `{ "user_query": "..." }`
 2. FastAPI validates the payload (Pydantic model)
-3. The app builds an LLM client:
-   - `OLLAMA_BASE_URL` (default `http://localhost:11434`)
-   - `OLLAMA_MODEL` (default `llama4:scout`)
+3. The app reads `LLM_PROVIDER` and builds an LLM client:
+   - `groq` is recommended for class and requires no local GPU.
+   - `ollama` is optional for local/offline learning.
 4. The app sends two messages to the model:
    - A **system prompt** (role + style)
    - Your **user query**
@@ -84,7 +85,8 @@ For every practical:
 - Basic computer and terminal usage
 - Visual Studio Code
 - Python 3.10+ (3.11 recommended)
-- Ollama
+- A Groq account and individual API key for the recommended path
+- Ollama only for the optional local path
 - No previous FastAPI or AI-agent experience required
 
 ---
@@ -111,8 +113,10 @@ cp .env.example .env
 
 Fill in:
 
-- `OLLAMA_BASE_URL`
-- `OLLAMA_MODEL`
+- `LLM_PROVIDER=groq`
+- `GROQ_API_KEY`
+- `GROQ_MODEL`
+- Or the optional `OLLAMA_BASE_URL` and `OLLAMA_MODEL`
 - `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_BASE_URL`
 - `APP_ENV`, `APP_PROJECT`
 
@@ -120,23 +124,30 @@ Fill in:
 
 ## Run
 
-### 1) Start Ollama and pull the model
+### Option A — Groq Cloud (recommended)
 
-In one terminal:
+Set these values in `.env`:
+
+```text
+LLM_PROVIDER=groq
+GROQ_API_KEY=gsk_your_individual_key
+GROQ_MODEL=llama-3.1-8b-instant
+```
+
+No local model download or GPU is needed.
+
+### Option B — Ollama (optional local mode)
+
+Set `LLM_PROVIDER=ollama`, then start Ollama:
 
 ```bash
 ollama serve
-```
-
-In another terminal:
-
-```bash
 ollama pull llama4:scout
 ```
 
 If you change `OLLAMA_MODEL` in your `.env`, pull that model instead.
 
-### 2) Start the API server
+### Start the API server
 
 ```bash
 uvicorn app.main:app --reload
@@ -177,7 +188,17 @@ You should get JSON back like:
 
 ## Troubleshooting
 
-- **Ollama connection errors**
+- **Groq authentication errors**
+  - Confirm `GROQ_API_KEY` is present in `.env`
+  - Restart Uvicorn after changing `.env`
+  - Never place the key in frontend or committed files
+
+- **Groq rate-limit errors**
+  - HTTP `429` means the project has exceeded a request or token limit
+  - Wait and retry according to the provider response
+  - Prefer individual student keys instead of one shared classroom key
+
+- **Ollama connection errors in optional local mode**
   - Confirm Ollama is running: `ollama serve`
   - Confirm `OLLAMA_BASE_URL` matches where Ollama is listening (default `http://localhost:11434`)
 

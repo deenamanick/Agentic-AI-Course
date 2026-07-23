@@ -65,7 +65,7 @@ python3 python_basics.py
 2. Add a `weather` tool.
 3. Change `completed_lessons` to `0`.
 4. Add a boolean named `ollama_running`.
-5. Print a different message when Ollama is not running.
+5. Add a variable named `model_provider` and print whether the class is using Groq or Ollama.
 
 ## Errors are useful
 
