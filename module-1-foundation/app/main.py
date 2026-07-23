@@ -3,6 +3,7 @@ import uuid
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -46,6 +47,16 @@ def build_llm() -> ChatOllama:
 
 
 app = FastAPI(title="Jeevisoft Local AI Backend", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        os.getenv("FRONTEND_ORIGIN", "http://localhost:5173"),
+    ],
+    allow_credentials=False,
+    allow_methods=["POST"],
+    allow_headers=["Content-Type"],
+)
 
 
 @app.post("/chat", response_model=ChatResponse)

@@ -1,28 +1,28 @@
-# Module 1 — Foundation: Local-first AI Backend (FastAPI + Ollama + Langfuse)
+# Module 1 — Python, FastAPI, and Your First Local AI API
 
 ## What you will build
 
-In this module you build a small **local-first AI backend**.
+This module is designed for a student who is new to Python and backend development.
 
-- A **FastAPI** server exposing a single endpoint: `POST /chat`
-- The endpoint calls a local LLM running in **Ollama** using **LangChain** (`ChatOllama`)
-- Each request is traced to **Langfuse** (observability)
+You will first learn the small amount of Python needed for this course. Then you will build:
 
-By the end, you will be able to send a JSON request to your local server and get an AI-generated response back.
+- A FastAPI server with a `POST /chat` endpoint
+- A local AI connection using Ollama and LangChain
+- A shell script that tests the API using `curl`
+- Optional request tracing with Langfuse
+- A beginner-friendly chat interface designed with Lovable
 
----
+You do not need to master all of Python before starting.
 
-## Why this module exists
+## Beginner learning rule
 
-Agentic systems need a reliable “home base” backend before you add tools, memory, graphs, or multi-agent orchestration.
+For every practical:
 
-This module sets up:
-
-- A clean API boundary (`/chat`)
-- Local inference (no external LLM API required)
-- Tracing so you can see what happened inside each request
-
----
+1. Understand the idea in plain English.
+2. Type a small example.
+3. Run it immediately.
+4. Change something and run it again.
+5. Break it safely and understand the error.
 
 ## What’s in this folder
 
@@ -39,10 +39,15 @@ This module sets up:
 
 ## Practicals
 
-1. [Set up the local AI environment](module-1-1-local-environment.md)
-2. [Understand and run the chat API](module-1-2-chat-api.md)
-3. [Connect and test Ollama](module-1-3-ollama.md)
-4. [Trace requests with Langfuse](module-1-4-langfuse.md)
+1. [Python basics for AI agents](module-1-1-python-basics.md)
+2. [Python functions, packages, and environment variables](module-1-2-python-project-basics.md)
+3. [How web APIs, HTTP, and JSON work](module-1-3-web-api-basics.md)
+4. [Build your first FastAPI application](module-1-4-fastapi-basics.md)
+5. [Understand the existing AI backend code](module-1-5-code-walkthrough.md)
+6. [Connect FastAPI to Ollama](module-1-6-ollama.md)
+7. [Understand the Bash and curl test script](module-1-7-test-script.md)
+8. [Trace AI requests with Langfuse](module-1-8-langfuse.md)
+9. [Create a Lovable chat UI and connect it](module-1-9-lovable-chat-ui.md)
 
 ---
 
@@ -65,9 +70,11 @@ This module sets up:
 
 ## Prerequisites
 
+- Basic computer and terminal usage
+- Visual Studio Code
 - Python 3.10+ (3.11 recommended)
-- Ollama installed and working
-- (Optional but recommended) Langfuse account + keys
+- Ollama
+- No previous FastAPI or AI-agent experience required
 
 ---
 
