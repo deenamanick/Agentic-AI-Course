@@ -4,6 +4,20 @@ import time
 import uuid
 from typing import Any
 
+"""
+================================================================================
+WHAT MAKES THIS AN "AGENT" AND NOT JUST A CHATBOT?
+--------------------------------------------------------------------------------
+1. TOOLS (The Hands): Python functions (like `calculator`) that the AI can use.
+2. BRAIN (The LLM): The AI model (Groq or Ollama) that makes decisions.
+3. LOOP (The ReAct Pattern): The agent doesn't just answer immediately. It loops:
+   - THINK: "Do I need a tool for this user's question?"
+   - ACT: Call the tool (e.g., calculator).
+   - OBSERVE: Read the tool's result.
+   - REPEAT: Keep thinking/acting until it has the final answer.
+================================================================================
+"""
+
 # Load environment variables from the .env file
 from dotenv import load_dotenv
 
@@ -166,7 +180,19 @@ def build_agent(llm: BaseChatModel):
 
 
 # ─── CREATE THE FASTAPI APP ──────────────────────────────────────────
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="Jeevisoft Agents API", version="0.3.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        os.getenv("FRONTEND_ORIGIN", "http://localhost:5173"),
+    ],
+    allow_credentials=False,
+    allow_methods=["POST"],
+    allow_headers=["Content-Type"],
+)
 
 
 # ─── ENDPOINT: Agent Chat ────────────────────────────────────────────

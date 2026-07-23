@@ -1,196 +1,198 @@
-import ast
 import os
 import uuid
-from typing import Any, Dict, List, Literal, TypedDict
+from typing import Any, Dict, Optional, TypedDict
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
+from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_groq import ChatGroq
 from langchain_ollama import ChatOllama
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.language_models.chat_models import BaseChatModel
 
 from langfuse import get_client
 from langfuse.langchain import CallbackHandler
-
-from langgraph.graph import END, StateGraph
-
+from langgraph.graph import StateGraph, START, END
 
 load_dotenv()
 
+# ─── REQUEST & RESPONSE SHAPES ───────────────────────────────────────
 
-class GraphChatRequest(BaseModel):
-    user_query: str
+class ResumeRequest(BaseModel):
+    raw_text: str = Field(..., description="The user's messy text about their experience and skills.")
 
-
-class GraphChatResponse(BaseModel):
-    answer: str
+class ResumeResponse(BaseModel):
+    markdown_resume: str
     request_id: str
-    route: str
 
+# ─── EXTRACTION SCHEMA ───────────────────────────────────────────────
+# This is the "mold" we force the AI to fill in Node 1.
 
-def build_llm() -> ChatOllama:
-    base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    model = os.getenv("OLLAMA_MODEL", "llama4:scout")
+class ExtractedResumeData(BaseModel):
+    name: str = Field(description="The person's full name, if provided. If not, return 'Unknown'.")
+    skills: list[str] = Field(description="A list of technical and soft skills.")
+    experience: list[str] = Field(description="A list of past work experience, jobs, or roles.")
 
-    return ChatOllama(
-        model=model,
-        base_url=base_url,
-        temperature=float(os.getenv("OLLAMA_TEMPERATURE", "0.4")),
-    )
+# ─── GRAPH STATE (THE BUCKET) ────────────────────────────────────────
 
+class ResumeState(TypedDict):
+    raw_text: str
+    name: Optional[str]
+    skills: list[str]
+    experience: list[str]
+    summary: Optional[str]
+    final_resume: str
+    llm: BaseChatModel            # Pass the LLM through state for convenience
+    langfuse_handler: CallbackHandler # Pass the tracker
 
-def _safe_eval_arithmetic(expression: str) -> str:
-    node = ast.parse(expression, mode="eval")
+# ─── MODEL PROVIDER ──────────────────────────────────────────────────
 
-    allowed_nodes = (
-        ast.Expression,
-        ast.BinOp,
-        ast.UnaryOp,
-        ast.Add,
-        ast.Sub,
-        ast.Mult,
-        ast.Div,
-        ast.FloorDiv,
-        ast.Mod,
-        ast.Pow,
-        ast.USub,
-        ast.UAdd,
-        ast.Constant,
-        ast.Load,
-        ast.Call,
-        ast.Name,
-    )
-
-    for subnode in ast.walk(node):
-        if not isinstance(subnode, allowed_nodes):
-            raise ValueError("Unsupported expression")
-        if isinstance(subnode, ast.Call):
-            raise ValueError("Function calls are not allowed")
-        if isinstance(subnode, ast.Name):
-            raise ValueError("Names are not allowed")
-
-    result = eval(compile(node, "<expr>", "eval"), {"__builtins__": {}}, {})
-    return str(result)
-
-
-class GraphState(TypedDict):
-    request_id: str
-    route: Literal["general", "math"]
-    user_query: str
-    messages: List[Any]
-    plan: str
-    answer: str
-    llm: ChatOllama
-    langfuse_handler: CallbackHandler
-
-
-def route_node(state: GraphState) -> Dict[str, Any]:
-    text = state["user_query"].strip()
-    maybe_math = any(ch.isdigit() for ch in text) and any(op in text for op in ["+", "-", "*", "/", "(", ")"])
-    route: Literal["general", "math"] = "math" if maybe_math else "general"
-    return {"route": route}
-
-
-async def plan_node(state: GraphState) -> Dict[str, Any]:
-    llm: ChatOllama = state["llm"]  # type: ignore[assignment]
-    handler: CallbackHandler = state["langfuse_handler"]  # type: ignore[assignment]
-
-    sys = SystemMessage(
-        content=(
-            "You are a planning assistant. Create a short plan (3-5 bullets) to answer the user. "
-            "Do not answer fully yet."
+def build_llm() -> BaseChatModel:
+    provider = os.getenv("LLM_PROVIDER", "groq").lower()
+    
+    if provider == "groq":
+        return ChatGroq(
+            model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
+            temperature=0.1,
+            max_retries=2,
         )
-    )
-    human = HumanMessage(content=state["user_query"])
-
-    result = await llm.ainvoke([sys, human], config={"callbacks": [handler]})
-    return {"plan": result.content}
-
-
-def math_tool_node(state: GraphState) -> Dict[str, Any]:
-    query = state["user_query"]
-    try:
-        value = _safe_eval_arithmetic(query)
-        answer = value
-    except Exception:
-        answer = "I couldn't safely evaluate that expression. Please provide a simple arithmetic expression."
-
-    return {"answer": answer}
-
-
-async def execute_node(state: GraphState) -> Dict[str, Any]:
-    llm: ChatOllama = state["llm"]  # type: ignore[assignment]
-    handler: CallbackHandler = state["langfuse_handler"]  # type: ignore[assignment]
-
-    sys = SystemMessage(
-        content=(
-            "You are an expert AI architect. Use the plan to answer concisely. "
-            "Return a crisp final answer."
+    if provider == "ollama":
+        return ChatOllama(
+            model=os.getenv("OLLAMA_MODEL", "llama4:scout"),
+            base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+            temperature=0.1,
         )
-    )
+    raise ValueError("Unsupported LLM_PROVIDER. Choose 'groq' or 'ollama'.")
 
-    human = HumanMessage(content=f"User query: {state['user_query']}\n\nPlan:\n{state.get('plan','')}")
+# ─── NODE 1: EXTRACT ─────────────────────────────────────────────────
 
-    result = await llm.ainvoke([sys, human], config={"callbacks": [handler]})
-    return {"answer": result.content}
+async def extract_node(state: ResumeState) -> Dict[str, Any]:
+    """
+    Node 1: Reads raw_text and extracts structured JSON data.
+    """
+    llm = state["llm"]
+    handler = state["langfuse_handler"]
+    raw_text = state["raw_text"]
 
+    # Force the LLM to return data matching our Pydantic schema
+    extractor = llm.with_structured_output(ExtractedResumeData)
+    
+    prompt = f"Extract the name, skills, and experience from this text:\n\n{raw_text}"
+    
+    result = await extractor.ainvoke(prompt, config={"callbacks": [handler]})
+    
+    # Update the bucket
+    return {
+        "name": result.name,
+        "skills": result.skills,
+        "experience": result.experience
+    }
 
-def finalize_node(state: GraphState) -> Dict[str, Any]:
-    messages = state.get("messages", [])
-    messages.append(AIMessage(content=state.get("answer", "")))
-    return {"messages": messages}
+# ─── NODE 2: DRAFT ───────────────────────────────────────────────────
 
+async def draft_summary_node(state: ResumeState) -> Dict[str, Any]:
+    """
+    Node 2: Drafts a professional summary based on the extracted data.
+    """
+    llm = state["llm"]
+    handler = state["langfuse_handler"]
+    
+    name = state.get("name", "User")
+    skills = ", ".join(state.get("skills", []))
+    exp = ", ".join(state.get("experience", []))
+    
+    prompt = f"""
+    Write a 3-sentence professional resume summary for {name}.
+    They have these skills: {skills}.
+    They have this experience: {exp}.
+    Make it sound highly professional and impactful. Do not use the word "I".
+    """
+    
+    response = await llm.ainvoke(prompt, config={"callbacks": [handler]})
+    
+    # Update the bucket
+    return {"summary": response.content}
 
-def choose_next(state: GraphState) -> str:
-    return "math_tool" if state.get("route") == "math" else "plan"
+# ─── NODE 3: FORMAT ──────────────────────────────────────────────────
 
+def format_node(state: ResumeState) -> Dict[str, Any]:
+    """
+    Node 3: Combines all state data into a final formatted Markdown resume.
+    Notice this function is NOT async and does NOT call the LLM!
+    """
+    name = state.get("name", "Unknown Name")
+    summary = state.get("summary", "No summary provided.")
+    skills = state.get("skills", [])
+    experience = state.get("experience", [])
+    
+    # Create the markdown string
+    md = f"# {name.upper()}\n\n"
+    
+    md += "## PROFESSIONAL SUMMARY\n"
+    md += f"{summary}\n\n"
+    
+    md += "## SKILLS\n"
+    for skill in skills:
+        md += f"- {skill}\n"
+    md += "\n"
+    
+    md += "## EXPERIENCE\n"
+    for exp in experience:
+        md += f"- {exp}\n"
+        
+    # Update the bucket
+    return {"final_resume": md}
+
+# ─── BUILD THE GRAPH ─────────────────────────────────────────────────
 
 def build_graph():
-    graph = StateGraph(GraphState)
+    workflow = StateGraph(ResumeState)
 
-    graph.add_node("route", route_node)
-    graph.add_node("plan", plan_node)
-    graph.add_node("math_tool", math_tool_node)
-    graph.add_node("execute", execute_node)
-    graph.add_node("finalize", finalize_node)
+    # Add workers
+    workflow.add_node("extract", extract_node)
+    workflow.add_node("draft", draft_summary_node)
+    workflow.add_node("format", format_node)
 
-    graph.set_entry_point("route")
+    # Define the strict, deterministic workflow
+    workflow.add_edge(START, "extract")
+    workflow.add_edge("extract", "draft")
+    workflow.add_edge("draft", "format")
+    workflow.add_edge("format", END)
 
-    graph.add_conditional_edges(
-        "route",
-        choose_next,
-        {
-            "math_tool": "math_tool",
-            "plan": "plan",
-        },
-    )
+    return workflow.compile()
 
-    graph.add_edge("math_tool", "finalize")
-    graph.add_edge("plan", "execute")
-    graph.add_edge("execute", "finalize")
-    graph.add_edge("finalize", END)
+# ─── FASTAPI APP ─────────────────────────────────────────────────────
 
-    return graph.compile()
+app = FastAPI(title="Jeevisoft Resume Builder Workflow API", version="0.4.0")
 
+# Add CORS for the Lovable UI
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")],
+    allow_credentials=False,
+    allow_methods=["POST"],
+    allow_headers=["Content-Type"],
+)
 
-app = FastAPI(title="Jeevisoft LangGraph API", version="0.4.0")
-
-
-@app.post("/graph/chat", response_model=GraphChatResponse)
-async def graph_chat(req: GraphChatRequest) -> GraphChatResponse:
+@app.post("/resume/build", response_model=ResumeResponse)
+async def build_resume(req: ResumeRequest) -> ResumeResponse:
     request_id = str(uuid.uuid4())
 
     llm = build_llm()
     langfuse_handler = CallbackHandler()
 
-    app_state: GraphState = {
-        "request_id": request_id,
-        "route": "general",
-        "user_query": req.user_query,
-        "messages": [HumanMessage(content=req.user_query)],
-        "plan": "",
-        "answer": "",
+    # Initial empty bucket
+    app_state: ResumeState = {
+        "raw_text": req.raw_text,
+        "name": None,
+        "skills": [],
+        "experience": [],
+        "summary": None,
+        "final_resume": "",
+        "llm": llm,
+        "langfuse_handler": langfuse_handler,
     }
 
     metadata = {
@@ -198,21 +200,14 @@ async def graph_chat(req: GraphChatRequest) -> GraphChatResponse:
         "environment": os.getenv("APP_ENV", "Development"),
         "request_id": request_id,
         "langfuse_session_id": request_id,
-        "langfuse_tags": [
-            f"Project:{os.getenv('APP_PROJECT', 'Jeevi-Academy')}",
-            f"Environment:{os.getenv('APP_ENV', 'Development')}",
-            "Module:LangGraph",
-        ],
+        "langfuse_tags": ["Module:LangGraph-Resume"],
     }
 
     runnable = build_graph()
 
+    # Run the graph
     result_state: Dict[str, Any] = await runnable.ainvoke(
-        {
-            **app_state,
-            "llm": llm,
-            "langfuse_handler": langfuse_handler,
-        },
+        app_state,
         config={
             "callbacks": [langfuse_handler],
             "metadata": metadata,
@@ -221,7 +216,7 @@ async def graph_chat(req: GraphChatRequest) -> GraphChatResponse:
 
     get_client().flush()
 
-    answer = result_state.get("answer", "")
-    route = result_state.get("route", "general")
+    # Get the final markdown from the completed bucket
+    final_md = result_state.get("final_resume", "")
 
-    return GraphChatResponse(answer=str(answer), request_id=request_id, route=str(route))
+    return ResumeResponse(markdown_resume=final_md, request_id=request_id)

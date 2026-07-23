@@ -56,6 +56,20 @@ def echo(text: str) -> str:
 
 ---
 
+## 🤔 Why These Specific Three Tools?
+
+You might be wondering: *Why only these three? Why not a web search or a database tool?*
+
+We chose these three because they perfectly demonstrate the **three main reasons** we use agents, without requiring any external API keys or complex setups:
+
+1. **Calculator:** LLMs are famously bad at math. This tool proves the agent can solve problems the LLM's brain cannot solve on its own.
+2. **Time (`now_unix`):** LLMs have no concept of "now" (their training data is frozen in the past). This proves the agent can fetch real-time data that the LLM lacks.
+3. **Echo:** This is a pure debugging tool. It helps you prove the tool-calling connection is working before you build complex logic.
+
+We keep it to just three simple tools so you can focus 100% on **learning how the agent loop works**, without getting distracted by broken API keys or network errors. Once you understand the loop, adding a web search tool is easy!
+
+---
+
 ## 🎭 Dialogue: Why Are Descriptions So Important?
 
 **Alex:** These are just regular Python functions. What makes them "tools"?

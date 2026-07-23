@@ -1,58 +1,47 @@
-# Module 4 — LangGraph (Deterministic Agentic Workflows)
+# Module 4 — LangGraph (Deterministic Workflows)
 
 ## What you will build
 
-In this module you build an **agentic workflow** using **LangGraph**.
+In Module 3, you built an **autonomous agent** that decided on its own what tools to use. But what happens when you need 100% predictable, reliable results?
+
+In this module, you will build a **deterministic workflow** using LangGraph. We are going to build the **Resume Builder Agent** (Task 5 from the real-world projects list).
 
 You will expose a single API endpoint:
+- `POST /resume/build`
 
-- `POST /graph/chat`
-
-Instead of letting an agent “freestyle”, you will define an explicit graph:
-
-- `route` (decide if the request is math vs general)
-- `math_tool` (safe local arithmetic)
-- `plan` (LLM creates a short plan)
-- `execute` (LLM answers using the plan)
-- `finalize` (store final output)
-
-Every request is traced with Langfuse.
+Instead of letting the agent "freestyle", you will force it through an exact 3-step pipeline:
+1. `extract_node`: Reads a messy text dump from the user and extracts structured JSON (Name, Skills, Experience) using `with_structured_output`.
+2. `draft_node`: Uses the JSON to draft a professional summary.
+3. `format_node`: A pure-Python (no AI) step that combines the data into a beautifully formatted Markdown resume.
 
 ---
 
-## Why LangGraph
-
-Agents are powerful but can be unpredictable. LangGraph gives you:
-
-- Deterministic steps
-- Clear state transitions
-- Conditional routing
-- Easier debugging and evaluation
-
----
-
-## What’s in this folder
+## What's in this folder
 
 - `app/main.py`
-  - `POST /graph/chat`
-  - Graph definition and nodes
+  - `POST /resume/build`
+  - The `ResumeState` definition
+  - The 3-node LangGraph workflow
 - `.env.example`
+  - Configuration for Groq (default), optional Ollama, and Langfuse
 - `requirements.txt`
-- `scripts/test_graph.sh`
 
 ## Practicals
 
-1. [Define graph state and nodes](module-4-1-state-nodes.md)
-2. [Add conditional routing](module-4-2-routing.md)
-3. [Plan, execute, and finalize](module-4-3-plan-execute.md)
-4. [Trace and test the graph](module-4-4-graph-tests.md)
+0. [Why do we need Workflows? (Agents vs Workflows)](module-4-0-why-workflows.md)
+1. [Defining the Graph State](module-4-1-graph-state.md)
+2. [Node 1: Structured Extraction](module-4-2-extraction-node.md)
+3. [Nodes 2 & 3: Generation & Formatting](module-4-3-generation-nodes.md)
+4. [Compile and Run the Graph](module-4-4-compile-run.md)
+5. [Create a Lovable Resume UI](module-4-5-lovable-resume-ui.md)
 
 ---
 
 ## Prerequisites
 
+- Module 3 understanding
 - Python 3.10+
-- Ollama installed and running
+- A Groq account and API key (recommended) OR Ollama installed locally
 - (Optional but recommended) Langfuse keys
 
 ---
@@ -68,23 +57,22 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
+Fill in your `GROQ_API_KEY` in `.env`.
+
 ---
 
 ## Run
 
-### 1) Start Ollama and pull the model
+### Option A — Groq Cloud (recommended, no GPU needed)
 
-```bash
-ollama serve
+Set in `.env`:
+```text
+LLM_PROVIDER=groq
+GROQ_API_KEY=gsk_your_individual_key
+GROQ_MODEL=llama-3.1-8b-instant
 ```
 
-In another terminal:
-
-```bash
-ollama pull llama4:scout
-```
-
-### 2) Start the API server
+### Start the API server
 
 ```bash
 uvicorn app.main:app --reload
@@ -92,39 +80,26 @@ uvicorn app.main:app --reload
 
 ---
 
-## Test
+## Test Locally
+
+Send a messy brain dump to your API:
 
 ```bash
-bash scripts/test_graph.sh
+curl -sS -X POST "http://127.0.0.1:8000/resume/build" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "raw_text": "Hey I am Sarah. I have been working as a data scientist for 4 years at Meta. I know SQL, Python, and PyTorch. Before that I was an intern at a small startup doing frontend dev with React."
+  }'
 ```
 
----
-
-## Lab 1 — Routing
-
-Send two prompts:
-
-- A general planning query
-- A math query
-
-Confirm the response includes a `route` value that changes accordingly.
-
----
-
-## Lab 2 — Extend routing (student exercise)
-
-Improve the `route_node` to detect:
-
-- date/time questions
-- summarization questions
-
-Add new routes and nodes.
+You should receive a beautifully formatted Markdown resume in the `markdown_resume` field!
 
 ---
 
 ## Checkpoint (Module 4)
 
-- [ ] I can run `POST /graph/chat` locally.
-- [ ] The system routes math queries to the `math_tool` node.
-- [ ] The system routes general queries through `plan -> execute`.
-- [ ] I can find the run in Langfuse using `request_id`.
+- [ ] I understand the difference between an autonomous agent and a deterministic workflow.
+- [ ] I understand how the `ResumeState` is passed from node to node.
+- [ ] I know how to force an LLM to return valid JSON using `with_structured_output`.
+- [ ] I understand why the `format_node` uses standard Python instead of an LLM.
+- [ ] I successfully generated a UI in Lovable that renders the Markdown resume.

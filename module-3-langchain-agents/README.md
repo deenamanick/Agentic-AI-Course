@@ -38,6 +38,7 @@ In Modules 1–2, you built a chatbot that can only **talk**. In Module 3, you'l
 5. [Agent framework landscape (2025/2026)](module-3-5-framework-landscape.md)
 6. [When NOT to use an agent](module-3-6-when-not-to-use-agent.md)
 7. [Test your agent](module-3-7-agent-tests.md)
+8. [Create a Lovable Agent UI](module-3-8-lovable-agent-ui.md)
 
 ---
 
