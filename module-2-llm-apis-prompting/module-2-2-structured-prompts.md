@@ -1,28 +1,38 @@
-# Practical 2.2 — Turn Vague Requests into Structured Prompts
+# Practical 2.2 — Turn Vague Requests into Structured Prompts (The Architect's Blueprint)
 
 ## Why, in simple terms
 
-“Make something good” forces the AI to guess. A structured prompt is like a clear project brief.
+If you just say "make something good," the AI will **guess**. If you give it a **Structured Prompt**, it's like giving an architect a **blueprint**. You get exactly what you want, no guesswork.
 
-## The five-part prompt
+---
+
+## 🏗️ The 5-Part Prompt Template
+
+Use this structure every time for better results:
 
 ```text
-ROLE: Who should the AI act as?
-TASK: What exact result is needed?
-CONTEXT: Who is it for and what information matters?
-RULES: What boundaries must it follow?
-OUTPUT: What format should it return?
+1. ROLE:    Who should the AI act as?
+2. TASK:    What exact result is needed?
+3. CONTEXT: Who is it for and what information matters?
+4. RULES:   What boundaries must it follow?
+5. OUTPUT:  What format should it return?
 ```
 
-## From vague to clear
+---
 
-Vague:
+## 🎯 Before vs After: See the Difference!
+
+### ❌ The Vague Prompt
 
 ```text
 Explain FastAPI.
 ```
 
-Structured:
+**What the AI might return:**
+> FastAPI is a modern, fast web framework for building APIs with Python 3.7+ based on standard Python type hints. It provides automatic interactive documentation, data validation using Pydantic models, dependency injection, OAuth2 security, and async support with high performance comparable to NodeJS and Go...
+> *(3 paragraphs of technical jargon with code the student can't read yet)*
+
+### ✅ The Structured Prompt
 
 ```text
 ROLE: You are a patient technology trainer.
@@ -36,50 +46,67 @@ RULES:
 OUTPUT: Return a short explanation and three check questions.
 ```
 
-## Mixed-background practice
+**What the AI returns:**
+> Imagine a restaurant. The **kitchen** cooks food, but customers can't walk into the kitchen directly. They use a **waiter** — that's the **API** (Application Programming Interface). An **endpoint** is a specific item on the menu — like "/order-pizza."
+>
+> **FastAPI** is a tool that helps Python developers build these "waiters" quickly and correctly...
+>
+> **Check questions:**
+> 1. What does API stand for?
+> 2. What is an endpoint?
+> 3. Why can't the customer go directly to the kitchen?
 
-Explain the same concept for:
+**💡 Notice the difference?** The same AI, the same model, but wildly different output quality. The only thing that changed was the **prompt**.
 
-- A UX designer
-- A DevOps engineer
-- A homemaker
-- A Python developer
+---
 
-Notice that the core truth stays the same while analogy and detail change.
+## 🎭 Guided Classroom Activity
 
-## Guided classroom activity
-
-Start with:
+Start with this vague prompt:
 
 ```text
 Create a project plan.
 ```
 
-Ask the class five questions:
+Now ask the class these five questions:
 
-1. Who should the AI act as?
-2. What exact project is being planned?
-3. Who will use the plan?
-4. What limits or requirements apply?
-5. What output format is easiest to review?
+1. 🎭 **ROLE:** Who should the AI act as? *(A senior project manager? A Scrum master?)*
+2. 📋 **TASK:** What exact project is being planned? *(An AI chatbot? A mobile app?)*
+3. 👥 **CONTEXT:** Who will use the plan? *(A startup CEO? A classroom instructor?)*
+4. 🚧 **RULES:** What limits or requirements apply? *(Max 5 steps? Use agile? No budget discussion?)*
+5. 📄 **OUTPUT:** What output format is easiest to review? *(Bullet points? A table? JSON?)*
 
-Write the answers into the five-part template. Run both prompts and compare how much the AI had to guess.
+Write the answers into the five-part template. Run **both** prompts (the vague one and the structured one) and compare how much the AI had to guess.
 
-## Practice levels
+---
+
+## 👥 Mixed-Background Practice
+
+Explain the same concept (FastAPI) for different learner backgrounds:
+
+- **A UX designer:** Focus on user experience and API response times
+- **A DevOps engineer:** Focus on deployment, ports, and server configuration
+- **A homemaker:** Focus on the kitchen/restaurant analogy
+- **A Python developer:** Focus on decorators, type hints, and async
+
+Notice that the **core truth stays the same** while the analogy and detail level change.
+
+---
+
+## Practice Levels
 
 ### Understand
-
-Circle Role, Task, Context, Rules, and Output in a prepared prompt.
+Circle the Role, Task, Context, Rules, and Output in a prepared prompt.
 
 ### Practice
-
 Rewrite one vague request using all five parts.
 
 ### Challenge
-
 Create two versions for different learner backgrounds without changing the technical truth.
 
-## Lovable prompt
+---
+
+## 🎨 Lovable Prompt
 
 ```text
 Build a "Prompt Builder for Beginners" using React and Tailwind CSS.
@@ -95,15 +122,17 @@ Layout:
 - Frontend only. Store no API keys.
 ```
 
-## Success checklist
+---
 
-- [ ] I can identify all five prompt parts.
-- [ ] I can improve a vague request.
-- [ ] I can adapt an explanation without stereotyping the learner.
-- [ ] I understand that a good prompt reduces guessing.
-
-## Common problem
+## Common Problem
 
 **The prompt becomes very long but the result is not better.**
 
-Remove background information that does not affect the task. More text is not automatically more context.
+Remove background information that does not affect the task. More text is not automatically more context. A focused 5-line structured prompt beats a 50-line essay.
+
+## Success checklist
+
+- [ ] I can identify all five prompt parts.
+- [ ] I can dramatically improve a vague request.
+- [ ] I can adapt an explanation without stereotyping the learner.
+- [ ] I understand that a good prompt reduces guessing.

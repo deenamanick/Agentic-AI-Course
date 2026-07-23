@@ -48,16 +48,18 @@ In this module you take the Module 1 `/chat` API idea and turn it into a **promp
 
 0. [Start here: how Module 2 extends Module 1](module-2-0-bridge-from-module-1.md)
 1. [Meet the LLM through roleplay](module-2-1-llm-roleplay.md)
-2. [Turn vague requests into structured prompts](module-2-2-structured-prompts.md)
-3. [Separate system and user prompts](module-2-3-prompt-roles.md)
-4. [Break a large task into small prompts](module-2-4-prompt-chunking.md)
-5. [Refine prompts and check AI mistakes](module-2-5-refine-and-verify.md)
-6. [Version prompts](module-2-6-prompt-versioning.md)
-7. [Return structured output](module-2-7-structured-output.md)
-8. [Compare prompts with repeatable tests](module-2-8-prompt-comparison.md)
-9. [Understand the Module 2 code](module-2-9-code-walkthrough.md)
-10. [Understand and use the test scripts](module-2-10-test-scripts.md)
-11. [Create a Lovable Prompt Lab UI](module-2-11-lovable-prompt-lab.md)
+2. [When NOT to trust AI (The Reality Check)](module-2-1b-when-not-to-trust-ai.md)
+3. [Turn vague requests into structured prompts](module-2-2-structured-prompts.md)
+4. [Separate system and user prompts](module-2-3-prompt-roles.md)
+5. [Break a large task into small prompts](module-2-4-prompt-chunking.md)
+6. [Refine prompts and check AI mistakes](module-2-5-refine-and-verify.md)
+7. [Version prompts](module-2-6-prompt-versioning.md)
+8. [Return structured output](module-2-7-structured-output.md)
+9. [Compare prompts with repeatable tests](module-2-8-prompt-comparison.md)
+10. [Understand the Module 2 code](module-2-9-code-walkthrough.md)
+11. [Understand and use the test scripts](module-2-10-test-scripts.md)
+12. [Create a Lovable Prompt Lab UI](module-2-11-lovable-prompt-lab.md)
+13. [AI-Assisted Debugging and Refactoring](module-2-12-ai-debugging-refactoring.md)
 
 ---
 
