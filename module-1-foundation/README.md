@@ -1,23 +1,25 @@
-# Module 1 — Python, FastAPI, and Your First AI API
+# Module 1: Python, FastAPI, and Your First AI API
 
-## What you will build
+This module is designed for students who are new to Python and backend development. You will learn the foundations needed for the **entire Agentic AI course**.
 
-This module is designed for a student who is new to Python and backend development.
+> **👨‍🎓 Student Guide: How to follow this Module**
+> 1. **Phase 1: Concepts (Practicals 0-4)** - Understand AI Evolution, Agentic AI Capabilities, Python basics, and web APIs.
+> 2. **Phase 2: Build (Practicals 5-7)** - Build your first FastAPI server and connect it to an LLM.
+> 3. **Phase 3: Test & Observe (Practicals 8-9)** - Test with curl and trace with Langfuse.
+> 4. **Phase 4: Full Stack (Practical 10)** - Create a Lovable chat UI and connect it to your API.
 
-You will first learn the small amount of Python needed for this course. Then you will build:
+### What you'll build
 
 - A FastAPI server with a `POST /chat` endpoint
-- A hosted Llama connection using Groq and LangChain—no student GPU required
+- A hosted Llama connection using Groq and LangChain — no student GPU required
 - An optional local Ollama path for learners who want offline inference
 - A shell script that tests the API using `curl`
 - Optional request tracing with Langfuse
 - A beginner-friendly chat interface designed with Lovable
 
-You do not need to master all of Python before starting.
+### This module is for everyone
 
-## This module is for everyone
-
-Students may come from project management, DevOps, UX design, operations, teaching, homemaking, or software development. Existing coding experience changes how quickly someone types—it does not decide whether they can understand the system.
+Students may come from project management, DevOps, UX design, operations, teaching, homemaking, or software development. Existing coding experience changes how quickly someone types — it does not decide whether they can understand the system.
 
 Every practical has three levels:
 
@@ -25,59 +27,69 @@ Every practical has three levels:
 - **Practice:** Copy, run, and change a small working example.
 - **Challenge:** Extend the example when the learner is ready.
 
-## Beginner learning rule
+### What's in this folder
 
-For every practical:
+- `app/main.py` — Defines the FastAPI app, the `/chat` endpoint, and the LLM client.
+- `.env.example` — Environment variable template for Groq, Ollama, and Langfuse.
+- `requirements.txt` — Python dependencies.
+- `scripts/test_chat.sh` — Quick curl script to call `POST /chat`.
 
-1. Understand the idea in plain English.
-2. Type a small example.
-3. Run it immediately.
-4. Change something and run it again.
-5. Break it safely and understand the error.
+### Practicals
 
-## What’s in this folder
+- `module-1-0-welcome.md` — AI Evolution, Agentic AI Capabilities, and the big picture
+- `module-1-1-python-basics.md` — Python basics for AI agents
+- `module-1-2-python-project-basics.md` — Functions, packages, and environment variables
+- `module-1-2b-internet-basics.md` — How the Internet works (Frontend vs Backend)
+- `module-1-3-web-api-basics.md` — How web APIs, HTTP, and JSON work
+- `module-1-4-fastapi-basics.md` — Build your first FastAPI application
+- `module-1-5-code-walkthrough.md` — Understand the existing AI backend code
+- `module-1-6-groq-ollama.md` — Connect FastAPI to Groq or Ollama
+- `module-1-7-test-script.md` — Understand the Bash and curl test script
+- `module-1-8-langfuse.md` — Trace AI requests with Langfuse
+- `module-1-9-lovable-chat-ui.md` — Create a Lovable chat UI and connect it
 
-- `app/main.py`
-  - Defines the FastAPI app and the `/chat` endpoint
-  - Creates either a LangChain `ChatGroq` or `ChatOllama` client
-  - Sends traces to Langfuse
-- `requirements.txt`
-  - Python dependencies for the module
-- `.env.example`
-  - Environment variable template for Groq, optional Ollama, Langfuse, and app metadata
-- `scripts/test_chat.sh`
-  - Quick curl script to call `POST /chat`
+### Recommended order
 
-## Practicals
-
-0. [Start here: confidence, roles, and the complete picture](module-1-0-welcome.md)
-1. [Python basics for AI agents](module-1-1-python-basics.md)
-2. [Python functions, packages, and environment variables](module-1-2-python-project-basics.md)
-3. [How the Internet Works (Frontend vs Backend)](module-1-2b-internet-basics.md)
-4. [How web APIs, HTTP, and JSON work](module-1-3-web-api-basics.md)
-5. [Build your first FastAPI application](module-1-4-fastapi-basics.md)
-6. [Understand the existing AI backend code](module-1-5-code-walkthrough.md)
-7. [Connect FastAPI to Groq or Ollama](module-1-6-groq-ollama.md)
-8. [Understand the Bash and curl test script](module-1-7-test-script.md)
-9. [Trace AI requests with Langfuse](module-1-8-langfuse.md)
-10. [Create a Lovable chat UI and connect it](module-1-9-lovable-chat-ui.md)
+1. Welcome & Big Picture (concepts — AI Evolution + 3 Capabilities)
+2. Python basics
+3. Python functions & packages
+4. How the Internet works
+5. Web APIs, HTTP, JSON
+6. Build FastAPI app
+7. Code walkthrough
+8. Connect to Groq/Ollama
+9. Test with curl
+10. Langfuse tracing
+11. Lovable chat UI
 
 ---
 
 ## Request flow (mental model)
 
-1. You send `POST /chat` with `{ "user_query": "..." }`
-2. FastAPI validates the payload (Pydantic model)
-3. The app reads `LLM_PROVIDER` and builds an LLM client:
-   - `groq` is recommended for class and requires no local GPU.
-   - `ollama` is optional for local/offline learning.
-4. The app sends two messages to the model:
-   - A **system prompt** (role + style)
-   - Your **user query**
-5. Langfuse callback records the request trace
-6. The endpoint returns:
-   - `answer` (model output)
-   - `request_id` (unique ID you can also use as trace/session ID)
+```text
+Student types a question
+        |
+        v
+Chat screen sends POST /chat with {"user_query": "..."}
+        |
+        v
+FastAPI validates the payload (Pydantic model)
+        |
+        v
+App reads LLM_PROVIDER → builds ChatGroq or ChatOllama client
+        |
+        v
+App sends system prompt + user query to the model
+        |
+        v
+Langfuse callback records the request trace
+        |
+        v
+FastAPI returns {"answer": "...", "request_id": "..."}
+        |
+        v
+Chat screen displays the answer
+```
 
 ---
 
@@ -95,32 +107,36 @@ For every practical:
 
 ## Setup
 
-### 1) Create a virtual environment and install dependencies
+> **👨‍🎓 Student Guide: Follow these steps in order!**
 
 From this folder (`module-1-foundation/`):
 
 ```bash
+# Step 1: Create a virtual environment
 python3 -m venv .venv
+
+# Step 2: Activate it
 source .venv/bin/activate
+
+# Step 3: Install dependencies
 pip install -r requirements.txt
-```
 
-### 2) Configure environment variables
-
-Create a `.env` file:
-
-```bash
+# Step 4: Copy the env template & fill in your keys
 cp .env.example .env
 ```
 
-Fill in:
+Fill in your keys in `.env`:
 
-- `LLM_PROVIDER=groq`
-- `GROQ_API_KEY`
-- `GROQ_MODEL`
-- Or the optional `OLLAMA_BASE_URL` and `OLLAMA_MODEL`
-- `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_BASE_URL`
-- `APP_ENV`, `APP_PROJECT`
+| Variable | Required? | What it is |
+| :--- | :--- | :--- |
+| `LLM_PROVIDER` | ✅ Yes | Set to `groq` (recommended) or `ollama` |
+| `GROQ_API_KEY` | ✅ Yes (if using Groq) | Your individual Groq API key |
+| `GROQ_MODEL` | ✅ Yes (if using Groq) | e.g., `llama-3.1-8b-instant` |
+| `OLLAMA_BASE_URL` | Only if using Ollama | Default: `http://localhost:11434` |
+| `OLLAMA_MODEL` | Only if using Ollama | e.g., `llama4:scout` |
+| `LANGFUSE_PUBLIC_KEY` | Optional | For request tracing |
+| `LANGFUSE_SECRET_KEY` | Optional | For request tracing |
+| `LANGFUSE_BASE_URL` | Optional | Default: `https://cloud.langfuse.com` |
 
 ---
 
@@ -155,13 +171,11 @@ If you change `OLLAMA_MODEL` in your `.env`, pull that model instead.
 uvicorn app.main:app --reload
 ```
 
-Your API will be available at:
-
-- `http://127.0.0.1:8000`
+Your API will be available at `http://127.0.0.1:8000`.
 
 ---
 
-## Test
+## Quick Test
 
 ### Option A: Use the provided script
 
@@ -177,48 +191,48 @@ curl -sS -X POST "http://127.0.0.1:8000/chat" \
   -d '{"user_query":"Design a serverless full-stack backend on Cloudflare for a small SaaS. Keep it concise."}'
 ```
 
----
+**Expected response:**
 
-## Expected response
-
-You should get JSON back like:
-
-- `answer`: the model’s response text
-- `request_id`: a unique identifier for the request (also used for Langfuse metadata)
+```json
+{
+  "answer": "The model's response text...",
+  "request_id": "a-unique-uuid"
+}
+```
 
 ---
 
 ## Troubleshooting
 
-- **Groq authentication errors**
-  - Confirm `GROQ_API_KEY` is present in `.env`
-  - Restart Uvicorn after changing `.env`
-  - Never place the key in frontend or committed files
-
-- **Groq rate-limit errors**
-  - HTTP `429` means the project has exceeded a request or token limit
-  - Wait and retry according to the provider response
-  - Prefer individual student keys instead of one shared classroom key
-
-- **Ollama connection errors in optional local mode**
-  - Confirm Ollama is running: `ollama serve`
-  - Confirm `OLLAMA_BASE_URL` matches where Ollama is listening (default `http://localhost:11434`)
-
-- **Model not found**
-  - Pull the model: `ollama pull <model>`
-  - Make sure your `.env` `OLLAMA_MODEL` matches the pulled model name exactly
-
-- **Langfuse errors / no traces**
-  - Verify `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_BASE_URL`
-  - If you’re using Langfuse Cloud, the default base URL is `https://cloud.langfuse.com`
+| Problem | What to check |
+| :--- | :--- |
+| **Groq authentication error** | Confirm `GROQ_API_KEY` is in `.env`. Restart Uvicorn after changes. Never commit keys! |
+| **Groq rate-limit (HTTP 429)** | Wait and retry. Use individual student keys, not one shared key. |
+| **Ollama connection error** | Confirm Ollama is running: `ollama serve`. Check `OLLAMA_BASE_URL`. |
+| **Model not found** | Pull the model: `ollama pull <model>`. Match `OLLAMA_MODEL` exactly. |
+| **Langfuse no traces** | Verify `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_BASE_URL`. |
 
 ---
 
-## What you’ll do next
+## What you'll do next
 
 After Module 1, this API becomes the foundation for adding:
 
-- Better prompting + structured outputs
-- Tool calling (LangChain tools)
-- Agent graphs (LangGraph)
-- Multi-step workflows and agentic patterns
+| Module | What you'll add |
+| :--- | :--- |
+| **Module 2** | Better prompting + structured outputs |
+| **Module 3** | Tool calling (LangChain agents) |
+| **Module 4** | Agent graphs (LangGraph) |
+| **Module 5** | Agent design patterns |
+| **Module 6** | Custom tools (stock prices + email) |
+| **Module 7** | Memory & stateful agents |
+
+---
+
+## Checklist
+
+- [ ] You can name the 4 stages of AI evolution and the 3 core Agentic AI capabilities.
+- [ ] You successfully set up the virtual environment and installed dependencies.
+- [ ] You can start the API server with `uvicorn`.
+- [ ] You successfully tested the API with curl and received a response.
+- [ ] You understand the request flow from frontend → FastAPI → LLM → response.

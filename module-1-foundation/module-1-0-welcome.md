@@ -99,6 +99,32 @@ The core loop is: **Plan → Execute → Reflect → Refine** (and repeat).
 
 ---
 
+## 🤖 The 9 Types of AI Agents
+
+As you progress from basic code to advanced Agentic AI, you will move through a spectrum of intelligence. Here are the 9 core agent archetypes — and where you will build them in this course:
+
+| Name of the agent | Key Characteristics | Examples | Best For |
+| :--- | :--- | :--- | :--- |
+| **1. Fixed Automation: The Digital Assembly Line** | No intelligence, predictable behavior, limited scope | RPA, email autoresponders, basic scripts | Repetitive tasks, structured data, no need for adaptability |
+| **2. LLM-Enhanced: Smarter, but Not Einstein** | Context-aware, rule-constrained, stateless | Email filters, content moderation, support ticket routing | Flexible tasks, high-volume/low-stakes, cost-sensitive scenarios |
+| **3. ReAct: Reasoning Meets Action** | Multi-step workflows, dynamic planning, basic problem-solving | Travel planners, AI dungeon masters, project planning tools | Strategic planning, multi-stage queries, dynamic adjustments |
+| **4. ReAct + RAG: Grounded Intelligence** | External knowledge access, low hallucinations, real-time data | Legal research tools, medical assistants, technical support | High-stakes decisions, domain-specific tasks, real-time knowledge needs |
+| **5. Tool-Enhanced: The Multi-Taskers** | Multi-tool integration, dynamic execution, high automation | Code generation tools, data analysis bots | Complex workflows requiring multiple tools and APIs |
+| **6. Self-Reflecting: The Philosophers** | Meta-cognition, explainability, self-improvement | Self-evaluating systems, QA agents | Tasks requiring accountability and improvement |
+| **7. Memory-Enhanced: The Personalized Powerhouses** | Long-term memory, personalization, adaptive learning | Project management AI, personalized assistants | Individualized experiences, long-term interactions |
+| **8. Environment Controllers: The World Shapers** | Active environment control, autonomous operation, feedback-driven | AutoGPT, adaptive robotics, smart cities | System control, IoT integration, autonomous operations |
+| **9. Self-Learning: The Evolutionaries** | Autonomous learning, adaptive/scalable, evolutionary behavior | Neural networks, swarm AI, financial prediction models | Cutting-edge research, autonomous learning systems |
+
+### How these map to your journey in this course:
+- **Level 1 & 2 (Automation & LLMs):** Covered in Module 1 & 2.
+- **Level 3 (ReAct):** Covered in Module 3 & 4.
+- **Level 5 (Tools):** Covered in Module 6.
+- **Level 7 (Memory):** Covered in Module 7.
+- **Level 4 (RAG):** Covered in Module 8.
+- **Level 6 (Reflection):** Covered in Module 5 & 11.
+
+---
+
 ## What is Agentic AI? (Real-World Use Cases)
 
 Unlike a traditional ChatGPT interface (where you ask a question and it just returns text), **Agentic AI** refers to systems that can plan, use tools, interact with external systems, and autonomously execute multi-step workflows to achieve a goal. 
@@ -186,6 +212,7 @@ Examples:
 
 - [ ] You can name the 4 stages of AI evolution (Process Automation → Supervised AI/ML → Generative AI → Agentic AI).
 - [ ] You can name the 3 core capabilities of Agentic AI (Task Decomposition, Memory Management, Reflect & Adapt).
+- [ ] You understand the 9 core agent archetypes and know where you will build them in this course.
 - [ ] You can describe the complete flow without technical detail.
 - [ ] You know this course does not assume a developer background.
 - [ ] You have written one personal learning goal.
