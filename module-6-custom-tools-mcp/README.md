@@ -1,35 +1,34 @@
-# Module 6 — Custom Tools & External APIs
+# Module 6: Custom Tools & External APIs
 
-## What you will build
+This module is about giving your AI agent the ability to **interact with the real world**. So far your agents could only read and write text. Here you will:
 
-So far, your agents have been trapped inside a box, only able to read and write text. In this module, you give your agent the ability to **interact with the real world**.
+- Understand what External APIs are and why agents need them
+- Build a **Stock Price Tool** (Read Tool — safe)
+- Build an **Email Alert Tool** (Write Tool — dangerous!)
+- Learn about **Tool Safety** (mocking, human-in-the-loop)
+- Connect it all to a beautiful Lovable UI
 
-We are building the **Indian Stock Market Alert Agent**. 
+### What's in this folder
 
-You will build two powerful custom tools:
-1. `get_stock_price`: Uses `yfinance` to fetch live prices from the NSE and BSE. (This is a **Read Tool**).
-2. `send_email_alert`: Uses `smtplib` to physically send an email to a user's inbox. (This is a **Write Tool**).
+- `app/main.py` — A single file containing **both tools** + the FastAPI agent. Everything lives here.
+- `.env.example` — Configuration for Groq, SMTP, and mock email settings.
+- `requirements.txt` — Python dependencies (includes `yfinance`).
 
----
+### Practicals
 
-## What's in this folder
+- `module-6-0-external-apis.md` — External APIs & The Real World (concepts only)
+- `module-6-1-stock-tool.md` — Building the Stock Price Tool (lines 33-57 of main.py)
+- `module-6-2-email-tool.md` — Building the Email Tool (lines 59-104 of main.py)
+- `module-6-3-tool-safety.md` — Tool Safety: Read vs Write tools (lines 75-81 of main.py)
+- `module-6-4-lovable-alert-ui.md` — Create a Lovable Alert UI (full-stack integration)
 
-- `app/main.py`
-  - `POST /agent/chat`
-  - A ReAct agent equipped with the two custom tools.
-  - Implements **Tool Safety** by using `MOCK_EMAILS` to prevent spamming during testing.
-- `.env.example`
-  - Configuration for Groq, SMTP (Email/Password), and MOCK settings.
-- `requirements.txt`
-  - Note the addition of `yfinance`!
+### Recommended order
 
-## Practicals
-
-0. [External APIs & The Real World](module-6-0-external-apis.md)
-1. [Building the Stock Price Tool](module-6-1-stock-tool.md)
-2. [Building the Email Tool](module-6-2-email-tool.md)
-3. [Tool Safety (Crucial!)](module-6-3-tool-safety.md)
-4. [Create a Lovable Alert UI](module-6-4-lovable-alert-ui.md)
+1. External APIs (concepts)
+2. Stock Tool (first tool — Read, safe)
+3. Email Tool (second tool — Write, dangerous)
+4. Tool Safety (understanding mocks)
+5. Lovable UI (full-stack integration)
 
 ---
 
@@ -37,24 +36,34 @@ You will build two powerful custom tools:
 
 - Python 3.10+
 - A Groq account and API key
-- (Optional) A Gmail account if you want to test sending *real* emails (Requires generating an App Password).
+- (Optional) A Gmail account if you want to test sending *real* emails (requires an App Password).
 
 ---
 
 ## Setup
 
+> **👨‍🎓 Student Guide: Follow these steps in order!**
+
 From this folder (`module-6-custom-tools-mcp/`):
 
 ```bash
+# Step 1: Create a virtual environment
 python3 -m venv .venv
+
+# Step 2: Activate it
 source .venv/bin/activate
+
+# Step 3: Install dependencies
 pip install -r requirements.txt
+
+# Step 4: Copy the env template & fill in your keys
 cp .env.example .env
 ```
 
 Fill in your `GROQ_API_KEY` in `.env`.
 
-> **IMPORTANT:** Ensure `MOCK_EMAILS=true` is set in your `.env` file when you start testing!
+> [!IMPORTANT]
+> Ensure `MOCK_EMAILS=true` is set in your `.env` file when you start testing! This prevents the agent from sending real emails.
 
 ---
 
@@ -68,9 +77,7 @@ uvicorn app.main:app --reload
 
 ---
 
-## Test Locally
-
-Send a prompt asking the agent to check an Indian stock and send an email:
+## Quick Test (1 curl command)
 
 ```bash
 curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
@@ -80,13 +87,15 @@ curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
   }'
 ```
 
-Watch the terminal running `uvicorn` carefully! You will see the agent call the `get_stock_price` tool, and then you will see the `[MOCK EMAIL]` output printed to the terminal instead of an actual email being sent.
+Watch the terminal running `uvicorn` carefully! You will see:
+1. The agent call the `get_stock_price` tool → returns the price
+2. The `[MOCK EMAIL]` output printed to the terminal (not a real email!)
 
 ---
 
-## Checkpoint (Module 6)
+## Checklist
 
-- [ ] I can explain what a custom tool is in LangChain.
-- [ ] I understand why the **docstring** of a Python function is critical for the AI to use the tool correctly.
-- [ ] I understand the danger of **Write Tools** (like sending emails) compared to **Read Tools**.
-- [ ] I successfully tested my agent and saw the Mock Email printed in my terminal.
+- [ ] You can explain what a custom tool is in LangChain.
+- [ ] You understand why the **docstring** of a Python function is critical for the AI to use the tool correctly.
+- [ ] You understand the danger of **Write Tools** (like sending emails) compared to **Read Tools**.
+- [ ] You successfully tested your agent and saw the Mock Email printed in your terminal.

@@ -1,9 +1,9 @@
 # Module 6.4: Create a Lovable Alert UI 🎨
 
 > **👨‍🎓 Student Guide: How to follow this Lab**
-> 1. **Phase 1: The Setup** - Start your local backend API.
-> 2. **Phase 2: The UI (Lovable AI)** - Use the provided prompt in Lovable to generate your dashboard.
-> 3. **Phase 3: The Integration** - Connect your Lovable UI to your local AI Agent.
+> 1. **Phase 1: The Setup (Visual Studio Code)** - Start your backend API server.
+> 2. **Phase 2: The UI (Lovable AI)** - Copy the prompt below into Lovable to generate your dashboard.
+> 3. **Phase 3: The Integration** - Test the full stock tool + email tool flow from the UI.
 
 ### Why (in simple terms)
 
@@ -16,17 +16,30 @@ A command line agent is cool, but real users want a dashboard! Let's use **Lovab
 
 ---
 
-## 🌊 Visual Studio Code Practice: Backend & Testing
+## 🌊 Visual Studio Code Practice: Start your Backend
 
-### Step 1: Start your backend
+### Step 1: Start the API
 
 1. Open your terminal in the `module-6-custom-tools-mcp` folder.
-2. Make sure your `.env` has Groq configured. **Make sure `MOCK_EMAILS=true` so you don't accidentally spam yourself while testing!**
-3. Start the server:
+2. Make sure your `.env` has Groq configured.
+3. **Make sure `MOCK_EMAILS=true` so you don't accidentally spam yourself while testing!**
+4. Start the server:
    ```bash
    uvicorn app.main:app --reload
    ```
-4. Leave this terminal running!
+5. Leave this terminal running!
+
+### Step 2: Verify it's working
+
+In a **second terminal**, test the agent with curl:
+
+```bash
+curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
+  -H "Content-Type: application/json" \
+  -d '{"user_query": "What is the price of RELIANCE.NS?"}'
+```
+
+You should get a JSON response with the stock price. If this works, your backend is ready!
 
 ---
 
@@ -66,12 +79,27 @@ Features & Requirements:
 
 ---
 
-## 🧪 Step 3: Test the UI
+## 🧪 Visual Studio Code Practice: Test the Full Flow
+
+### Step 3: Test stock prices
 
 Once Lovable builds the app:
-1. Click the quick prompt: *"What is the price of RELIANCE.NS and TCS.BO?"*
-2. The agent will "think", call the `get_stock_price` tool twice, and return the answer in the chat!
-3. Click the email alert prompt. Watch the agent check the price and (mock) send an email!
+
+| Step | What to do | What to expect |
+| :--- | :--- | :--- |
+| 1 | Click: *"What is the price of RELIANCE.NS and TCS.BO?"* | Agent calls `get_stock_price` twice and shows both prices |
+| 2 | Click: *"What is the price of HDFCBANK.NS?"* | Agent calls `get_stock_price` once and shows the price |
+
+### Step 4: Test email alerts
+
+| Step | What to do | What to expect |
+| :--- | :--- | :--- |
+| 1 | Click: *"Check if INFY.NS is above ₹3000..."* | Agent checks the price first |
+| 2 | Watch the uvicorn terminal | You should see `[MOCK EMAIL]` printed (not a real email!) |
+| 3 | The chat response | Agent confirms the mock email was "sent" |
+
+> [!TIP]
+> If you see `[MOCK EMAIL]` in your uvicorn terminal, everything is working perfectly! The agent chained both tools together automatically.
 
 ---
 
@@ -79,9 +107,11 @@ Once Lovable builds the app:
 
 - You successfully built an agent that can interact with the real world using custom tools.
 - You handled the dangers of Write Tools (emails) by using Mocking during development.
+- The Lovable UI connects to the same `POST /agent/chat` endpoint you've been testing with curl.
 
 ## Checklist
 
+- [ ] You verified the backend works with curl before starting Lovable.
 - [ ] You successfully generated the UI in Lovable.
 - [ ] The agent correctly fetched live Indian stock prices via the chat UI.
-- [ ] The agent successfully used the email tool when requested.
+- [ ] The agent successfully used the email tool and you saw `[MOCK EMAIL]` in the terminal.

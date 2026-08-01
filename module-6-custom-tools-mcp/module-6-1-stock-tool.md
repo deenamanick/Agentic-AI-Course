@@ -2,7 +2,7 @@
 
 > **👨‍🎓 Student Guide: How to follow this Lab**
 > 1. **Phase 1: Understand the Goal** - Read why we need a tool to fetch stock prices.
-> 2. **Phase 2: Visual Studio Code Practice** - Implement the `get_stock_price` tool using `yfinance`.
+> 2. **Phase 2: Visual Studio Code Practice** - Open `app/main.py` and study Tool 1 (lines 37-68).
 > 3. **Phase 3: The Brain** - Learn how the docstring instructs the AI to use the tool correctly.
 
 ### Why (in simple terms)
@@ -18,11 +18,25 @@ To do this, we will write a standard Python function using the `yfinance` librar
 
 ---
 
-## 🌊 Visual Studio Code Practice: Building the `get_stock_price` Tool
+## 🌊 Visual Studio Code Practice: Understanding the `get_stock_price` Tool
 
-### Step 1: Write the Tool
+> [!IMPORTANT]
+> All the code for this module lives in **one file**: `app/main.py`. You do NOT create a separate file. Open `app/main.py` and look for the section labeled **TOOL 1**.
 
-In `app/main.py`, we define our custom tool. Notice the **docstring** inside the function! This is incredibly important. The AI reads this docstring to understand *when* and *how* to use the tool.
+### Step 1: Open the code
+
+Open `app/main.py` in Visual Studio Code and find this section:
+
+```
+# =====================================================================
+# TOOL 1: GET STOCK PRICE  (Read Tool — SAFE)
+# Covered in: module-6-1-stock-tool.md
+# =====================================================================
+```
+
+### Step 2: Study the tool
+
+Here is what the tool does, line by line:
 
 ```python
 import yfinance as yf
@@ -42,22 +56,32 @@ def get_stock_price(ticker: str) -> str:
         A string containing the current price or an error message.
     """
     try:
-        # 1. Fetch the data from Yahoo Finance
+        # Step 1: Fetch the data from Yahoo Finance
         stock = yf.Ticker(ticker)
         
-        # 2. Get the current price (or previous close if market is closed)
+        # Step 2: Get the current price (or previous close if market is closed)
         todays_data = stock.history(period='1d')
         if todays_data.empty:
-            return f"Error: Could not find data for ticker {ticker}. Make sure to use .NS or .BO for Indian stocks."
+            return f"Error: Could not find data for {ticker}. Did you forget .NS or .BO?"
             
         price = todays_data['Close'].iloc[0]
         
-        # 3. Return a clean string to the AI
+        # Step 3: Return a clean string to the AI
         return f"The current price of {ticker} is ₹{price:.2f}"
         
     except Exception as e:
         return f"Error fetching price for {ticker}: {str(e)}"
 ```
+
+### What each part does:
+
+| Line | What it does | Why it matters |
+| :--- | :--- | :--- |
+| `@tool` | Tells LangChain "this is a tool the AI can use" | Without this, the AI can't call the function |
+| `def get_stock_price(ticker: str) -> str:` | A normal Python function that takes a ticker string | The type hint `str` tells the AI what argument to pass |
+| The **docstring** (triple quotes) | Instructions for the AI on *when* and *how* to use the tool | The AI reads this to decide the correct arguments |
+| `yf.Ticker(ticker)` | Connects to Yahoo Finance and fetches the stock data | This is the "external API" call |
+| `return f"The current price..."` | Returns a clean string | The AI reads this string and uses it in its response |
 
 ---
 
@@ -81,6 +105,7 @@ def get_stock_price(ticker: str) -> str:
 
 ## Checklist
 
+- [ ] You found Tool 1 in `app/main.py`.
 - [ ] You understand how the `@tool` decorator works.
 - [ ] You understand why we use `yfinance`.
 - [ ] You can explain why the docstring inside the tool is critical for the AI's success.

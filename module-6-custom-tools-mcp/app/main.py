@@ -22,6 +22,7 @@ from langfuse.langchain import CallbackHandler
 load_dotenv()
 
 # ─── REQUEST & RESPONSE SHAPES ───────────────────────────────────────
+# These are the JSON shapes that the frontend sends and receives.
 
 class AgentRequest(BaseModel):
     user_query: str
@@ -30,7 +31,10 @@ class AgentResponse(BaseModel):
     answer: str
     request_id: str
 
-# ─── TOOL 1: GET STOCK PRICE (READ TOOL - SAFE) ──────────────────────
+# =====================================================================
+# TOOL 1: GET STOCK PRICE  (Read Tool — SAFE)
+# Covered in: module-6-1-stock-tool.md
+# =====================================================================
 
 @tool
 def get_stock_price(ticker: str) -> str:
@@ -46,17 +50,26 @@ def get_stock_price(ticker: str) -> str:
         A string containing the current price or an error message.
     """
     try:
+        # Step 1: Fetch the data from Yahoo Finance
         stock = yf.Ticker(ticker)
+        
+        # Step 2: Get the current price (or previous close if market is closed)
         todays_data = stock.history(period='1d')
         if todays_data.empty:
             return f"Error: Could not find data for {ticker}. Did you forget .NS or .BO?"
             
         price = todays_data['Close'].iloc[0]
+        
+        # Step 3: Return a clean string to the AI
         return f"The current price of {ticker} is ₹{price:.2f}"
     except Exception as e:
         return f"Error fetching price for {ticker}: {str(e)}"
 
-# ─── TOOL 2: SEND EMAIL ALERT (WRITE TOOL - DANGEROUS) ───────────────
+# =====================================================================
+# TOOL 2: SEND EMAIL ALERT  (Write Tool — DANGEROUS!)
+# Covered in: module-6-2-email-tool.md
+# Safety logic covered in: module-6-3-tool-safety.md
+# =====================================================================
 
 @tool
 def send_email_alert(to_email: str, subject: str, body: str) -> str:
@@ -72,15 +85,16 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
     Returns:
         A success string or an error message.
     """
-    # 1. SAFETY: MOCKING! 
-    # If MOCK_EMAILS is true, we just pretend to send it to avoid spamming during testing.
+    # ── SAFETY MECHANISM: MOCK MODE (module-6-3-tool-safety.md) ──────
+    # If MOCK_EMAILS=true in .env, we just print to terminal instead of
+    # actually sending an email. This prevents accidents during testing!
     is_mock = os.getenv("MOCK_EMAILS", "true").lower() == "true"
     
     if is_mock:
         print(f"\n[MOCK EMAIL] To: {to_email}\nSubject: {subject}\nBody: {body}\n")
         return f"Successfully sent MOCK email alert to {to_email}. (MOCK_EMAILS=true)"
 
-    # 2. Real email sending logic
+    # ── REAL EMAIL SENDING (only runs when MOCK_EMAILS=false) ────────
     sender_email = os.getenv("SMTP_EMAIL")
     sender_password = os.getenv("SMTP_PASSWORD")
     
@@ -93,7 +107,7 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
         msg['From'] = sender_email
         msg['To'] = to_email
 
-        # NOTE: This uses Gmail's SSL port. Change if using SendGrid/etc.
+        # NOTE: This uses Gmail's SSL port (465). Change if using SendGrid/etc.
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(sender_email, sender_password)
             server.send_message(msg)
@@ -103,7 +117,9 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
     except Exception as e:
         return f"Failed to send email: {str(e)}"
 
-# ─── AGENT SETUP ─────────────────────────────────────────────────────
+# =====================================================================
+# AGENT SETUP — Connects both tools to the LLM
+# =====================================================================
 
 def build_llm():
     provider = os.getenv("LLM_PROVIDER", "groq").lower()
@@ -113,16 +129,19 @@ def build_llm():
         return ChatOllama(model=os.getenv("OLLAMA_MODEL", "llama4:scout"), temperature=0.1)
     raise ValueError("Unsupported LLM_PROVIDER.")
 
-# Register our custom tools with the agent!
+# We register BOTH tools here. The agent can use either one!
 tools = [get_stock_price, send_email_alert]
 
 def get_agent():
     llm = build_llm()
-    # We use LangGraph's prebuilt ReAct agent for simplicity here, 
-    # as the focus of this module is on the Custom Tools.
+    # We use LangGraph's prebuilt ReAct agent for simplicity,
+    # since the focus of this module is on the Custom Tools themselves.
     return create_react_agent(llm, tools=tools)
 
-# ─── FASTAPI APP ─────────────────────────────────────────────────────
+# =====================================================================
+# FASTAPI APP — The API that the frontend (Lovable UI) calls
+# Covered in: module-6-4-lovable-alert-ui.md
+# =====================================================================
 
 app = FastAPI(title="Jeevisoft Stock Alert API", version="0.6.0")
 

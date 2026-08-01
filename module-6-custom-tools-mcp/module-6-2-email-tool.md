@@ -2,8 +2,8 @@
 
 > **👨‍🎓 Student Guide: How to follow this Lab**
 > 1. **Phase 1: Understand the Goal** - Read why we need a tool to send emails.
-> 2. **Phase 2: Security First** - Learn how to handle passwords safely.
-> 3. **Phase 3: Visual Studio Code Practice** - Implement the `send_email_alert` tool.
+> 2. **Phase 2: Security First** - Learn how to handle passwords safely using `.env` files.
+> 3. **Phase 3: Visual Studio Code Practice** - Open `app/main.py` and study Tool 2 (lines 70-112).
 
 ### Why (in simple terms)
 
@@ -27,13 +27,37 @@ Instead, we use `.env` files. We store the email and password in the `.env` file
 > [!CAUTION]
 > If you are using Gmail, you cannot use your normal login password. You must generate an **"App Password"** in your Google Account Security settings.
 
+Check the `.env.example` file to see the variables you need:
+
+```bash
+# In your .env file:
+MOCK_EMAILS=true           # Keep this true while learning!
+SMTP_EMAIL=your_email@gmail.com
+SMTP_PASSWORD=your_app_password_here
+```
+
 ---
 
-## 🌊 Visual Studio Code Practice: Building the `send_email_alert` Tool
+## 🌊 Visual Studio Code Practice: Understanding the `send_email_alert` Tool
 
-### Step 1: Write the Tool
+> [!IMPORTANT]
+> This tool also lives in **`app/main.py`** — the same file as Tool 1. Open it and look for the section labeled **TOOL 2**.
 
-Here is our second custom tool. Notice again how clear the docstring is.
+### Step 1: Open the code
+
+Open `app/main.py` in Visual Studio Code and find this section:
+
+```
+# =====================================================================
+# TOOL 2: SEND EMAIL ALERT  (Write Tool — DANGEROUS!)
+# Covered in: module-6-2-email-tool.md
+# Safety logic covered in: module-6-3-tool-safety.md
+# =====================================================================
+```
+
+### Step 2: Study the tool
+
+Here is the email tool. Notice the safety mock logic at the top (we'll cover that in Module 6.3):
 
 ```python
 import os
@@ -55,7 +79,14 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
     Returns:
         A success string or an error message.
     """
-    # 1. Read secrets safely from the .env file
+    # ── SAFETY: MOCK MODE (covered in module-6-3) ───────────────
+    is_mock = os.getenv("MOCK_EMAILS", "true").lower() == "true"
+    
+    if is_mock:
+        print(f"\n[MOCK EMAIL] To: {to_email}\nSubject: {subject}\nBody: {body}\n")
+        return f"Successfully sent MOCK email alert to {to_email}. (MOCK_EMAILS=true)"
+
+    # ── REAL EMAIL (only runs when MOCK_EMAILS=false) ────────────
     sender_email = os.getenv("SMTP_EMAIL")
     sender_password = os.getenv("SMTP_PASSWORD")
     
@@ -63,13 +94,11 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
         return "Error: SMTP credentials not configured in the server."
 
     try:
-        # 2. Format the email
         msg = MIMEText(body)
         msg['Subject'] = subject
         msg['From'] = sender_email
         msg['To'] = to_email
 
-        # 3. Connect to Gmail's SMTP server and send!
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(sender_email, sender_password)
             server.send_message(msg)
@@ -79,6 +108,16 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
     except Exception as e:
         return f"Failed to send email: {str(e)}"
 ```
+
+### What each part does:
+
+| Line | What it does | Why it matters |
+| :--- | :--- | :--- |
+| `@tool` | Makes this function available to the AI | Same pattern as Tool 1 |
+| The **docstring** says "ONLY use this tool if..." | Tells the AI to only send emails when the user asks | Prevents unwanted emails |
+| `is_mock = os.getenv("MOCK_EMAILS")` | Checks if we're in safe testing mode | **Covered in module-6-3** |
+| `os.getenv("SMTP_EMAIL")` | Reads the email/password from `.env` | Never hardcode passwords! |
+| `smtplib.SMTP_SSL('smtp.gmail.com', 465)` | Connects to Gmail's secure email server | This is the "external API" call |
 
 ---
 
@@ -92,6 +131,14 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
 
 **Jeevi:** The AI thinks: *"Step 1: I need the price. I will use `get_stock_price`. Step 2: I have the price. Now I need to email it. I will use `send_email_alert`."* It automatically chains them together!
 
+### How the AI chains tools:
+
+| User says | Tool 1 called? | Tool 2 called? | Why? |
+| :--- | :--- | :--- | :--- |
+| "What is the price of TCS?" | ✅ `get_stock_price` | ❌ | No email requested |
+| "Email me the price of TCS" | ✅ `get_stock_price` | ✅ `send_email_alert` | Both price AND email needed |
+| "Send an email to boss@test.com" | ❌ | ✅ `send_email_alert` | No price needed |
+
 ---
 
 ## 💡 Key Takeaways
@@ -102,5 +149,6 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
 
 ## Checklist
 
+- [ ] You found Tool 2 in `app/main.py`.
 - [ ] You understand why you must use an `.env` file for passwords.
 - [ ] You understand how the agent chains multiple tools together.
