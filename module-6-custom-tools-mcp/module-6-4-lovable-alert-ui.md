@@ -1,12 +1,24 @@
-# Practical 6.4 — Create a Lovable Alert UI 🎨
+# Module 6.4: Create a Lovable Alert UI 🎨
 
-## Why, in simple terms
+> **👨‍🎓 Student Guide: How to follow this Lab**
+> 1. **Phase 1: The Setup** - Start your local backend API.
+> 2. **Phase 2: The UI (Lovable AI)** - Use the provided prompt in Lovable to generate your dashboard.
+> 3. **Phase 3: The Integration** - Connect your Lovable UI to your local AI Agent.
+
+### Why (in simple terms)
 
 A command line agent is cool, but real users want a dashboard! Let's use **Lovable** to build a modern "Stock Alert Dashboard" web app that connects to our local API. 
 
+### What you'll learn
+1. **Lovable UI**: How to generate a frontend quickly.
+2. **API Integration**: How to connect a UI to a local agent backend.
+3. **Full Stack Agents**: How to piece everything together into a real app.
+
 ---
 
-## 🏗️ Step 1: Start your backend
+## 🌊 Visual Studio Code Practice: Backend & Testing
+
+### Step 1: Start your backend
 
 1. Open your terminal in the `module-6-custom-tools-mcp` folder.
 2. Make sure your `.env` has Groq configured. **Make sure `MOCK_EMAILS=true` so you don't accidentally spam yourself while testing!**
@@ -18,7 +30,9 @@ A command line agent is cool, but real users want a dashboard! Let's use **Lovab
 
 ---
 
-## 🎨 Step 2: The Lovable Prompt
+## 🎨 Lovable AI Prompt (The Agent Dashboard)
+
+*Copy and paste this into [Lovable.dev](https://lovable.dev) to build a professional Agent UI!*
 
 1. Go to [Lovable.dev](https://lovable.dev) and start a new project.
 2. Copy and paste the EXACT prompt below.
@@ -66,8 +80,8 @@ Once Lovable builds the app:
 - You successfully built an agent that can interact with the real world using custom tools.
 - You handled the dangers of Write Tools (emails) by using Mocking during development.
 
-## Success checklist
+## Checklist
 
-- [ ] I successfully generated the UI in Lovable.
+- [ ] You successfully generated the UI in Lovable.
 - [ ] The agent correctly fetched live Indian stock prices via the chat UI.
 - [ ] The agent successfully used the email tool when requested.

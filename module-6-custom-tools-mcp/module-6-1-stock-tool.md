@@ -1,14 +1,26 @@
-# Practical 6.1 — Building the Stock Price Tool 📈
+# Module 6.1: Building the Stock Price Tool 📈
 
-## Why, in simple terms
+> **👨‍🎓 Student Guide: How to follow this Lab**
+> 1. **Phase 1: Understand the Goal** - Read why we need a tool to fetch stock prices.
+> 2. **Phase 2: Visual Studio Code Practice** - Implement the `get_stock_price` tool using `yfinance`.
+> 3. **Phase 3: The Brain** - Learn how the docstring instructs the AI to use the tool correctly.
+
+### Why (in simple terms)
 
 We need our AI to be able to check the live price of any stock on the Indian Stock Market (NSE or BSE). 
 
 To do this, we will write a standard Python function using the `yfinance` library, and then wrap it in LangChain's `@tool` decorator so the AI knows how to use it!
 
+### What you'll learn
+1. **Tool Creation**: How to use the `@tool` decorator.
+2. **yfinance**: How to fetch live stock data for free.
+3. **Docstrings**: Why they are critical for AI tool usage.
+
 ---
 
-## 🛠️ The Code: `get_stock_price`
+## 🌊 Visual Studio Code Practice: Building the `get_stock_price` Tool
+
+### Step 1: Write the Tool
 
 In `app/main.py`, we define our custom tool. Notice the **docstring** inside the function! This is incredibly important. The AI reads this docstring to understand *when* and *how* to use the tool.
 
@@ -67,8 +79,8 @@ def get_stock_price(ticker: str) -> str:
 - The `yfinance` library is an amazing, free way to get stock data without needing API keys.
 - **The Docstring is the Prompt for the Tool.** You must write clear instructions in the docstring so the AI knows how to pass arguments correctly.
 
-## Success checklist
+## Checklist
 
-- [ ] I understand how the `@tool` decorator works.
-- [ ] I understand why we use `yfinance`.
-- [ ] I can explain why the docstring inside the tool is critical for the AI's success.
+- [ ] You understand how the `@tool` decorator works.
+- [ ] You understand why we use `yfinance`.
+- [ ] You can explain why the docstring inside the tool is critical for the AI's success.

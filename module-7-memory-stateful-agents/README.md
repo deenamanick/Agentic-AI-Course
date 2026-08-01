@@ -1,32 +1,34 @@
-# Module 7 — Memory & Stateful Agents
+# Module 7: Memory & Stateful Agents
 
-## What you will build
+This module is about giving your AI agent **real memory**. So far, every agent you built forgets you the moment a request finishes. Here you will:
 
-So far, all your agents have had "goldfish memory." They forget who you are the moment the request finishes.
+- Understand why LLMs are stateless ("goldfish memory")
+- Learn how Thread IDs separate memories for different users
+- Use LangGraph Checkpointers to store conversation history
+- Build a **Mental Health Companion** that remembers you across sessions
+- Connect it to a beautiful Lovable UI
 
-In this module, you will build **Task 14: Mental Health Companion**. This agent will use **LangGraph Checkpointers** to remember the user's state across multiple conversations. 
+### What's in this folder
 
-If a user connects on Monday and says they are stressed, and connects again on Wednesday, the agent will remember their stress and follow up with them!
+- `app/main.py` — A ReAct agent powered by `MemorySaver` with a `/agent/chat` endpoint.
+- `.env.example` — Configuration for Groq and Langfuse.
+- `requirements.txt` — Python dependencies.
 
----
+### Practicals
 
-## What's in this folder
+- `module-7-0-why-memory.md` — Why do Agents need Memory?
+- `module-7-1-thread-ids.md` — Thread IDs (keeping memories separated)
+- `module-7-2-checkpointers.md` — LangGraph Checkpointers (`MemorySaver`)
+- `module-7-3-test-companion.md` — Testing the Mental Health Companion
+- `module-7-4-lovable-companion-ui.md` — Create a Lovable Companion UI
 
-- `app/main.py`
-  - `POST /agent/chat`
-  - A ReAct agent powered by `MemorySaver`.
-  - Requires a `thread_id` to be passed in the request body.
-- `.env.example`
-  - Configuration for Groq and Langfuse.
-- `requirements.txt`
+### Recommended order
 
-## Practicals
-
-0. [Why do Agents need Memory?](module-7-0-why-memory.md)
-1. [Thread IDs](module-7-1-thread-ids.md)
-2. [LangGraph Checkpointers](module-7-2-checkpointers.md)
-3. [Testing the Mental Health Companion](module-7-3-test-companion.md)
-4. [Create a Lovable Companion UI](module-7-4-lovable-companion-ui.md)
+1. Why Memory? (concepts)
+2. Thread IDs (concepts)
+3. Checkpointers (code walkthrough)
+4. Test Companion (hands-on curl tests)
+5. Lovable UI (full-stack integration)
 
 ---
 
@@ -39,12 +41,21 @@ If a user connects on Monday and says they are stressed, and connects again on W
 
 ## Setup
 
+> **👨‍🎓 Student Guide: Follow these steps in order!**
+
 From this folder (`module-7-memory-stateful-agents/`):
 
 ```bash
+# Step 1: Create a virtual environment
 python3 -m venv .venv
+
+# Step 2: Activate it
 source .venv/bin/activate
+
+# Step 3: Install dependencies
 pip install -r requirements.txt
+
+# Step 4: Copy the env template & fill in your keys
 cp .env.example .env
 ```
 
@@ -62,7 +73,7 @@ uvicorn app.main:app --reload
 
 ---
 
-## Test Locally
+## Quick Test (2 curl commands)
 
 You must send two requests to test the memory. **Make sure you use the exact same `thread_id` for both!**
 
@@ -89,9 +100,9 @@ curl -sS -X POST "http://127.0.0.1:8000/agent/chat" \
 
 ---
 
-## Checkpoint (Module 7)
+## Checklist
 
-- [ ] I understand why an LLM API doesn't remember my previous requests by default.
-- [ ] I know what a `thread_id` is used for.
-- [ ] I can explain what a LangGraph Checkpointer (like `MemorySaver`) does.
-- [ ] I successfully tested the memory using two `curl` requests with the same `thread_id`.
+- [ ] You understand why an LLM API doesn't remember your previous requests by default.
+- [ ] You know what a `thread_id` is used for.
+- [ ] You can explain what a LangGraph Checkpointer (like `MemorySaver`) does.
+- [ ] You successfully tested the memory using two `curl` requests with the same `thread_id`.

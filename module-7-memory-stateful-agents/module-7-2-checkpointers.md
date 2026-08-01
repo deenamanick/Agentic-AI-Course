@@ -1,37 +1,58 @@
-# Practical 7.2 — LangGraph Checkpointers 💾
+# Module 7.2: LangGraph Checkpointers 💾
 
-## Why, in simple terms
+> **👨‍🎓 Student Guide: How to follow this Lab**
+> 1. **Phase 1: Understand the Goal** - Learn what a Checkpointer is and why we need one.
+> 2. **Phase 2: Visual Studio Code Practice** - Add `MemorySaver` to your agent in just 2 lines.
+> 3. **Phase 3: The Brain** - See how the `config` dictionary connects the Thread ID to the Checkpointer.
+
+### Why (in simple terms)
 
 We have a `thread_id`. Now we need the physical "database" to store the memories in!
 
 In LangGraph, databases that store state are called **Checkpointers**. 
+
+### What you'll learn
+1. **Checkpointers**: The LangGraph concept for storing agent state.
+2. **MemorySaver**: An in-memory checkpointer perfect for learning.
+3. **The config dict**: How to connect Thread IDs to the checkpointer at runtime.
+
+---
+
+## 📦 Checkpointer Options
+
 LangGraph comes with several built-in checkpointers:
-1. `MemorySaver`: Stores data in your computer's RAM. Extremely fast, requires zero setup, but deletes all memories when you restart your server. Perfect for learning!
-2. `SqliteSaver` / `PostgresSaver`: Stores data in a real SQL database. Keeps memories forever, even if the server crashes. Used for Production.
+
+| Checkpointer | Where it stores data | Survives restart? | Best for |
+| :--- | :--- | :--- | :--- |
+| `MemorySaver` | Your computer's RAM | ❌ No — data is lost | Learning & local testing |
+| `SqliteSaver` | A SQLite file on disk | ✅ Yes | Small production apps |
+| `PostgresSaver` | A PostgreSQL database | ✅ Yes | Large production apps |
 
 For this module, we will use `MemorySaver` to keep things simple.
 
 ---
 
-## 🛠️ Adding Memory to the Agent
+## 🌊 Visual Studio Code Practice: Adding Memory to the Agent
 
-In `app/main.py`, adding memory to our agent takes exactly two lines of code!
+### Step 1: Create the Checkpointer
+
+In `app/main.py`, adding memory to our agent takes exactly **two lines of code!**
 
 ```python
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 
-# 1. Create the database (in RAM)
+# LINE 1: Create the database (in RAM)
 memory_saver = MemorySaver()
 
-# 2. Pass it to the agent!
+# LINE 2: Pass it to the agent!
 agent = create_react_agent(
     model=llm, 
     checkpointer=memory_saver  # <-- This is the magic!
 )
 ```
 
-## 🔄 Using the Checkpointer
+### Step 2: Use the Checkpointer in the API
 
 When we call the agent via the API, we pass the `thread_id` inside a special `config` dictionary. 
 
@@ -47,6 +68,14 @@ result = await agent.ainvoke(
     config=config
 )
 ```
+
+### How it all fits together:
+
+| What | Where in the code | What it does |
+| :--- | :--- | :--- |
+| `MemorySaver()` | Top of `main.py` (line 43) | Creates the in-memory database |
+| `checkpointer=memory_saver` | Inside `create_react_agent()` (line 53) | Tells the agent to use this database |
+| `config = {"configurable": {"thread_id": ...}}` | Inside the `/agent/chat` endpoint (line 95-96) | Tells the agent which user's memory to load |
 
 ---
 
@@ -68,8 +97,8 @@ result = await agent.ainvoke(
 - `MemorySaver` is an in-memory checkpointer perfect for local testing.
 - You must pass the `thread_id` inside a `config` dictionary when calling `.ainvoke()`.
 
-## Success checklist
+## Checklist
 
-- [ ] I understand what a checkpointer is.
-- [ ] I can see how `MemorySaver` is passed to the agent.
-- [ ] I understand how the `config` dictionary tells the checkpointer which memory to load.
+- [ ] You understand what a Checkpointer is.
+- [ ] You can see how `MemorySaver` is passed to the agent in [main.py](file:///home/deena/Pictures/whizlabs/Agentic-AI-Course/module-7-memory-stateful-agents/app/main.py#L43-L54).
+- [ ] You understand how the `config` dictionary tells the checkpointer which memory to load.

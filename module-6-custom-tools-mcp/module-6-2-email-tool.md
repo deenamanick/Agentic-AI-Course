@@ -1,10 +1,20 @@
-# Practical 6.2 — Building the Email Tool 📧
+# Module 6.2: Building the Email Tool 📧
 
-## Why, in simple terms
+> **👨‍🎓 Student Guide: How to follow this Lab**
+> 1. **Phase 1: Understand the Goal** - Read why we need a tool to send emails.
+> 2. **Phase 2: Security First** - Learn how to handle passwords safely.
+> 3. **Phase 3: Visual Studio Code Practice** - Implement the `send_email_alert` tool.
+
+### Why (in simple terms)
 
 Our agent can now fetch stock prices. But if the price drops drastically, we want the agent to alert us! We need to build a tool that can physically send an email to a user.
 
 To do this, we use Python's built-in `smtplib`. This allows Python to log in to an email server (like Gmail) and send a message.
+
+### What you'll learn
+1. **Security**: How to use `.env` files for passwords.
+2. **smtplib**: How to send emails with Python.
+3. **Tool Chaining**: How the agent uses multiple tools together.
 
 ---
 
@@ -19,7 +29,9 @@ Instead, we use `.env` files. We store the email and password in the `.env` file
 
 ---
 
-## 🛠️ The Code: `send_email_alert`
+## 🌊 Visual Studio Code Practice: Building the `send_email_alert` Tool
+
+### Step 1: Write the Tool
 
 Here is our second custom tool. Notice again how clear the docstring is.
 
@@ -88,7 +100,7 @@ def send_email_alert(to_email: str, subject: str, body: str) -> str:
 - Python's `smtplib` makes sending emails incredibly easy.
 - You can give an agent multiple tools, and it will figure out how to chain them together to solve complex requests.
 
-## Success checklist
+## Checklist
 
-- [ ] I understand why I must use an `.env` file for passwords.
-- [ ] I understand how the agent chains multiple tools together.
+- [ ] You understand why you must use an `.env` file for passwords.
+- [ ] You understand how the agent chains multiple tools together.

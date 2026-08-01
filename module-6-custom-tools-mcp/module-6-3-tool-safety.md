@@ -1,12 +1,22 @@
-# Practical 6.3 — Tool Safety (Crucial!) 🛑
+# Module 6.3: Tool Safety (Crucial!) 🛑
 
-## Why, in simple terms
+> **👨‍🎓 Student Guide: How to follow this Lab**
+> 1. **Phase 1: Understand the Danger** - Read about Read vs Write tools and infinite loops.
+> 2. **Phase 2: The Solution** - Learn the 3 main ways to make Write Tools safe.
+> 3. **Phase 3: Visual Studio Code Practice** - Learn how our mock environment works.
+
+### Why (in simple terms)
 
 You have given an autonomous AI Agent access to your email account. 
 
 Imagine this scenario: The user prompts: *"Check the price of RELIANCE.NS. If it is under ₹3000, send an email to my boss."*
 
 What happens if the AI hallucinates? What if it gets stuck in an infinite loop and sends 10,000 emails to your boss in one minute? **Your account will be banned, and you will be in huge trouble.**
+
+### What you'll learn
+1. **Read vs Write Tools**: How to classify tool safety.
+2. **Infinite Loops**: The real-world danger of autonomous agents.
+3. **Safety Mechanisms**: How to protect your systems.
 
 ---
 
@@ -33,6 +43,9 @@ The most common and safest method. When the AI wants to use the `send_email_aler
 For system-to-system tools (like "Charge Credit Card"), you pass a unique ID (like a UUID) with the request. If the AI hallucinates and calls the tool 5 times in a row with the same UUID, your payment server knows to only process it once.
 
 ### 3. Read-Only Fallbacks
+
+## 🌊 Visual Studio Code Practice: Testing with Mocks
+
 If you are building a learning project, the easiest safety mechanism is just... not sending the email! You can modify your tool to just print the email to the terminal instead of actually sending it.
 
 For our code in `app/main.py`, we have added a `MOCK_EMAILS=true` environment variable. When this is set to true, the `send_email_alert` tool will just return a success string without actually firing off the email. This keeps you safe while developing!
@@ -45,8 +58,8 @@ For our code in `app/main.py`, we have added a `MOCK_EMAILS=true` environment va
 - An AI can hallucinate or loop, causing real-world damage with Write Tools.
 - Always use Human-in-the-Loop or Mocking when developing agents with Write Tools!
 
-## Success checklist
+## Checklist
 
-- [ ] I know the difference between a Read Tool and a Write Tool.
-- [ ] I understand the danger of infinite loops with Write Tools.
-- [ ] I understand what Human-in-the-Loop (Approval Gating) means.
+- [ ] You know the difference between a Read Tool and a Write Tool.
+- [ ] You understand the danger of infinite loops with Write Tools.
+- [ ] You understand what Human-in-the-Loop (Approval Gating) means.

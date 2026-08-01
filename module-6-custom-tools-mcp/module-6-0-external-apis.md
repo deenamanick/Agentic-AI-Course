@@ -1,6 +1,10 @@
-# Practical 6.0 — External APIs & The Real World 🌍
+# Module 6.0: External APIs & The Real World 🌍
 
-## Why, in simple terms
+> **👨‍🎓 Student Guide: How to follow this Lab**
+> 1. **Understand Concepts** - Read about External APIs and how they enable agents to interact with the world.
+> 2. **Review Examples** - See how tools are conceptually structured for our Stock Alert Agent.
+
+### Why (in simple terms)
 
 So far, our AI Agents have been trapped in a box.
 - The **Calculator Agent** (Module 3) could only do math.
@@ -10,6 +14,11 @@ So far, our AI Agents have been trapped in a box.
 What if we want our Agent to actually *do* something in the real world? What if we want it to check the live price of a stock on the Indian Stock Market, and then send a real email to your inbox?
 
 To do this, we give the Agent **Custom Tools** that connect to **External APIs**.
+
+### What you'll learn
+1. **External APIs**: How computer programs talk to each other.
+2. **Custom Tools**: Why agents need them to interact with the real world.
+3. **Agent Workflow**: How an AI uses tools to accomplish a task.
 
 ---
 
@@ -58,8 +67,8 @@ In Agent-to-Agent (A2A) interactions, the output of Tool A becomes the context f
 - We do this by writing normal Python code (to fetch data or send messages) and wrapping it in an `@tool` decorator so the AI can use it.
 - In this module, we will build a real Stock Tracker that can send emails!
 
-## Success checklist
+## Checklist
 
-- [ ] I understand why an AI needs Custom Tools to interact with the real world.
-- [ ] I know what an API is.
-- [ ] I understand the 2 tools we are going to build for our Stock Alert Agent.
+- [ ] You can explain why an AI needs Custom Tools to interact with the real world.
+- [ ] You know what an API is.
+- [ ] You understand the 2 tools we are going to build for our Stock Alert Agent.
