@@ -1,79 +1,45 @@
 # Module 8: Agentic RAG and Verifiable Research
 
-This module is about giving your AI agent access to **your own documents**. So far, the agent can only answer from its training data. Here you will teach it to read PDFs, search through them, and answer with **page-level citations**.
+This module teaches you how to give your AI agent access to **your own documents** (PDFs, Company Policies, Research Papers) using Retrieval-Augmented Generation (RAG).
 
 > **👨‍🎓 Student Guide: How to follow this Module**
-> 1. **Phase 1: Concepts (Practical 0)** - Understand what RAG is and why Agentic RAG is different.
-> 2. **Phase 2: Build the Pipeline (Practicals 1-2)** - Ingest documents, chunk them, and retrieve evidence.
-> 3. **Phase 3: Make it Smart (Practical 3)** - Build a corrective RAG graph that retries when evidence is weak.
-> 4. **Phase 4: Make it Trustworthy (Practical 4)** - Add citations, defend against prompt injection, and evaluate.
+> This module is split into two halves:
+> 
+> **Part A: RAG Fundamentals**
+> We start with simple stories and analogies (like "loaves of bread" and "Google Maps") to help you build a basic, working PDF chatbot.
+> 
+> **Part B: Production RAG**
+> Once your bot is working, we introduce the advanced engineering concepts (Hybrid Search, Re-ranking, Contextual Chunking) required to put RAG into production safely.
 
 ### What you'll build
 
 A **PDF research assistant** that:
-- Reads and chunks your PDF documents
-- Stores them in a vector database for search
-- Retrieves the most relevant evidence for any question
-- Answers with page-level citations (e.g., "According to page 5 of document X...")
-- Defends against prompt injection in untrusted documents
-- Refuses to answer when evidence is insufficient
-
-### What's in this folder
-
-- `module-8-0-what-is-rag.md` — What is RAG? Standard vs Agentic RAG (concepts only)
-- `module-8-1-ingestion-chunking.md` — Ingest and chunk documents
-- `module-8-2-retrieval-reranking.md` — Retrieve and rerank evidence
-- `module-8-3-corrective-rag.md` — Build a corrective RAG graph (LangGraph)
-- `module-8-4-citations-evaluation.md` — Citations, injection defense, and evaluation
-
-### Recommended order
-
-1. What is RAG? (concepts)
-2. Ingestion & Chunking (prepare your documents)
-3. Retrieval & Reranking (search your documents)
-4. Corrective RAG Graph (smart retry logic)
-5. Citations & Evaluation (trustworthy answers)
+- Loads chunks of knowledge into an in-memory Vector Database.
+- Uses semantic search to find the right paragraphs.
+- Features a **Corrective LangGraph workflow** to grade evidence and retry if it fails.
+- Provides a beautiful chat interface using Lovable.
 
 ---
 
-## How RAG Works (mental model)
+## 📚 Course Outline
 
-```text
-User asks a question
-        |
-        v
-Agent searches your documents (Vector DB)
-        |
-        v
-Retrieves the most relevant chunks (evidence)
-        |
-        v
-Grades the evidence — is it good enough?
-        |
-       / \
-      /   \
-   Yes     No
-    |       |
-    v       v
- Answer   Rewrite the query & retry once
- with       |
-citations   v
-          Still weak? → "Insufficient evidence"
-```
+### Part A: RAG Fundamentals (Everyone Can Understand)
+1. [Why do we need RAG?](module-8-0-why-rag.md)
+2. [Document Ingestion](module-8-1-document-ingestion.md)
+3. [What is Chunking?](module-8-2-chunking-basics.md)
+4. [Embeddings & Vector Databases](module-8-3-embeddings-vector-db.md)
+5. [Building the Basic RAG Bot](module-8-4-basic-rag-bot.md)
 
----
+### Part B: Production RAG (Agentic AI Engineering)
+6. [Hybrid Retrieval](module-8-5-hybrid-retrieval.md)
+7. [Re-ranking](module-8-6-reranking.md)
+8. [Contextual Chunking](module-8-7-contextual-chunking.md)
+9. [Corrective RAG (Agentic Workflow)](module-8-8-corrective-rag.md)
+10. [Trustworthy RAG (Citations & Defenses)](module-8-9-trustworthy-rag.md)
+11. [RAG Evaluation Metrics](module-8-10-evaluation.md)
 
-## Key Concepts at a Glance
-
-| Concept | What it means | Simple analogy |
-| :--- | :--- | :--- |
-| **RAG** (Retrieval-Augmented Generation) | The AI searches your documents before answering | Like a student who checks their textbook before answering an exam question |
-| **Chunking** | Splitting a big document into small, searchable pieces | Like cutting a book into index cards |
-| **Embeddings** | Converting text into numbers so the computer can measure similarity | Like converting words into GPS coordinates — similar words are nearby |
-| **Vector DB** | A database optimized for finding similar embeddings | Like a library where books are arranged by topic, not alphabetically |
-| **Reranking** | Re-scoring search results to put the best evidence first | Like a teacher reviewing student answers and putting the best one on top |
-| **Corrective RAG** | The agent retries with a rewritten query if evidence is weak | Like asking the librarian "Can you search again with different keywords?" |
-| **Citations** | Linking each claim to the exact source page | Like footnotes in an academic paper |
+### UI Integration
+12. [Create a Lovable Chat UI for RAG](module-8-11-lovable-rag-ui.md)
 
 ---
 
@@ -83,12 +49,20 @@ citations   v
 - A Groq account and API key
 - Completed Module 7 (Memory & Stateful Agents)
 
----
+## Quick Start (Running the API)
 
-## Checklist
+From this folder (`module-8-agentic-rag/`):
 
-- [ ] You understand the difference between Standard RAG and Agentic RAG.
-- [ ] You can explain what chunking, embeddings, and vector databases do.
-- [ ] You successfully ingested documents and retrieved relevant evidence.
-- [ ] Your agent provides page-level citations with every answer.
-- [ ] Your agent refuses to answer when evidence is insufficient.
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Set your API Key
+cp .env.example .env
+# Edit .env and add your GROQ_API_KEY
+
+# 3. Start the API
+uvicorn app.main:app --reload
+```
+
+Your API will be available at `http://localhost:8000/agent/chat`. You can test it by sending a POST request or connecting your Lovable UI (see Module 8.11).
